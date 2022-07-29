@@ -1,0 +1,17 @@
+.logo {
+    font-family: "Bebas Neue", cursive;
+    color: red;
+}
+
+.img-overlay {
+    width: 100vw;
+    background: black;
+    overflow: hidden;
+}
+.carousel-item img {
+    width: 100vw;
+    height: 80vh;
+    object-fit: cover;
+    object-position: 50% 50%;
+    opacity: 0.7;
+}
