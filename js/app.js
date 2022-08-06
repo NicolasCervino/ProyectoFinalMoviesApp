@@ -15,26 +15,31 @@ const pelicula3 = new Movie("Interestelar", ["Matthew McConaughey", "Anne Hathaw
 const peliculas = [];
 peliculas.push(pelicula1, pelicula2, pelicula3);
 
-console.log("Todas las peliculas: ");
-// Obtengo el nombre de todas las peliculas del array
-for (let i = 0; i < peliculas.length; i++) {
-    console.log(peliculas[i].tittle);
-}
-
-// Permite realizar una busqueda
+// Permite ejecutar una busqueda
 function ejecutarBusqueda() {
+    console.log("Todas las peliculas: ");
+    console.table(peliculas); // Esto es para ayudar a visualizar mejor el resultado
+
     let confirmar = true;
 
     while (confirmar) {
-        let busqueda = prompt("Ingrese el genero que desea buscar (por ahora solo Accion, Terror o Ciencia Ficcion");
-
-        if (esGeneroValido(busqueda)) {
-            alert("Revisa la consola para ver los resultados");
-            console.log("Resultados de busqueda: ");
-            mostrarResultados(filtrarPorGenero(busqueda));
-            confirmar = false;
-        } else {
-            alert("No es un genero valido");
+        let tipoDeBusqueda = parseInt(prompt("Que tipo de busqueda desea realizar? 1. Buscar por Genero 2. Buscar por Actor"));
+        switch (tipoDeBusqueda) {
+            case 1:
+                let genero = prompt("Ingrese el genero que desea buscar (por ahora solo Accion, Terror o Ciencia Ficcion");
+                alert("Revisa la consola para ver los resultados");
+                mostrarResultados(filtrarPorGenero(genero));
+                confirmar = false;
+                break;
+            case 2:
+                let actor = prompt("Ingrese el nombre de un actor o actiz para ver sus peliculas");
+                alert("Revisa la consola para ver los resultados");
+                mostrarResultados(filtrarPorActor(actor));
+                confirmar = false;
+                break;
+            default:
+                alert("El tipo de busqueda es invalido");
+                break;
         }
     }
 }
@@ -50,25 +55,29 @@ function filtrarPorGenero(genero) {
     return resultado;
 }
 
-// Indica si el genero que ingreso el usuario es alguno de los generos validos
-function esGeneroValido(busqueda) {
-    return busqueda === "Terror" || busqueda === "Accion" || busqueda === "Ciencia Ficcion";
-}
-
-// Se encarga de mostrar solo el titulo de las peliculas de un resultado de busqueda
-function mostrarResultados(resultado) {
-    if (resultado.length == 0) {
-        console.log("No hay ninguna pelicula de ese genero");
-    } else
-        for (let i = 0; i < resultado.length; i++) {
-            console.log(resultado[i].tittle);
-        }
-}
-
 // Funcion para filtrar peliculas por actor/actriz
 function filtrarPorActor(actor) {
     return peliculas.filter((pelicula) => pelicula.cast.includes(actor));
 }
+
+// Se encarga de mostrar correctamente las peliculas de un resultado de busqueda
+function mostrarResultados(resultado) {
+    if (resultado.length == 0) {
+        console.log("Ninguna pelicula coincide con ese criterio de busqueda");
+    } else {
+        console.log("Resultados de busqueda");
+        resultado = resultado.map((movie) => {
+            return {
+                Titulo: movie.tittle,
+                Genero: movie.genre,
+                Reparto: movie.cast,
+            };
+        });
+        console.table(resultado);
+    }
+}
+
+ejecutarBusqueda();
 
 // Clase usuario, por ahora solo posee un nombre y una lista de peliculas
 class User {
@@ -95,26 +104,26 @@ class User {
 const usuario = new User("Pedro");
 
 // Muestro la lista vacia del usuario
-console.log("Lista inicial del usuario " + usuario.username);
-console.log(usuario.myList);
+// console.log("Lista inicial del usuario " + usuario.username);
+// console.log(usuario.myList);
 
-// Agrego 3 peliculas a la lista
-usuario.agregarAMiLista(pelicula1); // Thor
-usuario.agregarAMiLista(pelicula2); // Top Gun
-usuario.agregarAMiLista(pelicula3); // Interstellar
+// // Agrego 3 peliculas a la lista
+// usuario.agregarAMiLista(pelicula1); // Thor
+// usuario.agregarAMiLista(pelicula2); // Top Gun
+// usuario.agregarAMiLista(pelicula3); // Interstellar
 
-// Muestro la lista con elementos
-console.log("Lista despues de agregar elementos: ");
-console.log(usuario.myList);
-console.log(usuario.myList[0]);
-console.log(usuario.myList[1]);
-console.log(usuario.myList[2]);
+// // Muestro la lista con elementos
+// console.log("Lista despues de agregar elementos: ");
+// console.log(usuario.myList);
+// console.log(usuario.myList[0]);
+// console.log(usuario.myList[1]);
+// console.log(usuario.myList[2]);
 
-// Elimino 2 peliculas
-usuario.borrarDeMiLista(pelicula1); // Thor
-usuario.borrarDeMiLista(pelicula3); // Interstellar
+// // Elimino 2 peliculas
+// usuario.borrarDeMiLista(pelicula1); // Thor
+// usuario.borrarDeMiLista(pelicula3); // Interstellar
 
-// Muestro la lista con solo 1 elemento
-console.log("Lista despues de eliminar elementos: ");
-console.log(usuario.myList);
-console.log(usuario.myList[0]);
+// // Muestro la lista con solo 1 elemento
+// console.log("Lista despues de eliminar elementos: ");
+// console.log(usuario.myList);
+// console.log(usuario.myList[0]);
