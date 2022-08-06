@@ -64,3 +64,50 @@ function mostrarResultados(resultado) {
             console.log(resultado[i].tittle);
         }
 }
+
+// Clase usuario, por ahora solo posee un nombre y una lista de peliculas
+class User {
+    constructor(username) {
+        this.username = username;
+        this.myList = [];
+    }
+    // Metodo que permite agregar una pelicula a la lista del usuario
+    agregarAMiLista(pelicula) {
+        this.myList.push(pelicula);
+    }
+    // Metodo que permite eliminar una pelicula de la lista del usuario
+    borrarDeMiLista(pelicula) {
+        let indice = this.myList.indexOf(pelicula);
+        if (indice != -1) {
+            this.myList.splice(indice, 1);
+        }
+    }
+}
+
+// Usuario de prueba
+const usuario = new User("Pedro");
+
+// Muestro la lista vacia del usuario
+console.log("Lista inicial del usuario " + usuario.username);
+console.log(usuario.myList);
+
+// Agrego 3 peliculas a la lista
+usuario.agregarAMiLista(pelicula1); // Thor
+usuario.agregarAMiLista(pelicula2); // Top Gun
+usuario.agregarAMiLista(pelicula3); // Interstellar
+
+// Muestro la lista con elementos
+console.log("Lista despues de agregar elementos: ");
+console.log(usuario.myList);
+console.log(usuario.myList[0]);
+console.log(usuario.myList[1]);
+console.log(usuario.myList[2]);
+
+// Elimino 2 peliculas
+usuario.borrarDeMiLista(pelicula1); // Thor
+usuario.borrarDeMiLista(pelicula3); // Interstellar
+
+// Muestro la lista con solo 1 elemento
+console.log("Lista despues de eliminar elementos: ");
+console.log(usuario.myList);
+console.log(usuario.myList[0]);
