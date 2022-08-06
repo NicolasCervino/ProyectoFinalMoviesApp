@@ -8,9 +8,9 @@ class Movie {
 }
 
 // Ejemplos para poder testear
-const pelicula1 = new Movie("Thor: Love and Thunder", [], "Accion", "1h 59m");
-const pelicula2 = new Movie("Top Gun: Maverick", [], "Accion", "2h 11m");
-const pelicula3 = new Movie("Interestelar", [], "Ciencia Ficcion", "2h 49m");
+const pelicula1 = new Movie("Thor: Love and Thunder", ["Chris Hemsworth", "Christian Bale", "Natalie Portman"], "Accion", "1h 59m");
+const pelicula2 = new Movie("Top Gun: Maverick", ["Tom Cruise", "Miles Teller", "Jennifer Connelly"], "Accion", "2h 11m");
+const pelicula3 = new Movie("Interestelar", ["Matthew McConaughey", "Anne Hathaway", "Jessica Chastain"], "Ciencia Ficcion", "2h 49m");
 
 const peliculas = [];
 peliculas.push(pelicula1, pelicula2, pelicula3);
@@ -63,6 +63,11 @@ function mostrarResultados(resultado) {
         for (let i = 0; i < resultado.length; i++) {
             console.log(resultado[i].tittle);
         }
+}
+
+// Funcion para filtrar peliculas por actor/actriz
+function filtrarPorActor(actor) {
+    return peliculas.filter((pelicula) => pelicula.cast.includes(actor));
 }
 
 // Clase usuario, por ahora solo posee un nombre y una lista de peliculas
