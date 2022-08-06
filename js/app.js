@@ -38,7 +38,7 @@ function ejecutarBusqueda() {
                 confirmar = false;
                 break;
             default:
-                alert("El tipo de busqueda es invalido");
+                alert("El tipo de busqueda es invalido, debe ingresar un numero para seleccionar una opcion");
                 break;
         }
     }
