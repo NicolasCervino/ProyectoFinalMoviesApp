@@ -21,6 +21,24 @@ for (let i = 0; i < peliculas.length; i++) {
     console.log(peliculas[i].tittle);
 }
 
+// Permite realizar una busqueda
+function ejecutarBusqueda() {
+    let confirmar = true;
+
+    while (confirmar) {
+        let busqueda = prompt("Ingrese el genero que desea buscar (por ahora solo Accion, Terror o Ciencia Ficcion");
+
+        if (esGeneroValido(busqueda)) {
+            alert("Revisa la consola para ver los resultados");
+            console.log("Resultados de busqueda: ");
+            mostrarResultados(filtrarPorGenero(busqueda));
+            confirmar = false;
+        } else {
+            alert("No es un genero valido");
+        }
+    }
+}
+
 // Funcion para filtrar peliculas por genero
 function filtrarPorGenero(genero) {
     let resultado = [];
@@ -30,21 +48,6 @@ function filtrarPorGenero(genero) {
         }
     }
     return resultado;
-}
-
-let confirmar = true;
-
-while (confirmar) {
-    let busqueda = prompt("Ingrese el genero que desea buscar (por ahora solo Accion, Terror o Ciencia Ficcion");
-
-    if (esGeneroValido(busqueda)) {
-        alert("Revisa la consola para ver los resultados");
-        console.log("Resultados de busqueda: ");
-        mostrarResultados(filtrarPorGenero(busqueda));
-        confirmar = false;
-    } else {
-        alert("No es un genero valido");
-    }
 }
 
 // Indica si el genero que ingreso el usuario es alguno de los generos validos
