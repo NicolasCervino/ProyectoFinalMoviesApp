@@ -73,7 +73,9 @@ class User {
     }
     // Metodo que permite agregar una pelicula a la lista del usuario
     agregarAMiLista(pelicula) {
-        this.myList.push(pelicula);
+        if (!this.myList.includes(pelicula)) {
+            this.myList.push(pelicula);
+        }
     }
     // Metodo que permite eliminar una pelicula de la lista del usuario
     borrarDeMiLista(pelicula) {
