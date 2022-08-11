@@ -15,11 +15,11 @@
             integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
             crossorigin="anonymous"
         />
-        <!-- JS PROPIO -->
-        <script defer src="js/app.js"></script>
+        <title>MoviesApp</title>
         <!-- ARCHIVOS CSS -->
         <link rel="stylesheet" href="css/style.css" />
-        <title>MoviesApp</title>
+        <!-- JS PROPIO -->
+        <script defer src="js/app.js"></script>
     </head>
     <body class="bg-dark">
         <header class="container-fluid">
@@ -62,13 +62,13 @@
                                         Géneros
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="#">Acción</a></li>
-                                        <li><a class="dropdown-item" href="#">Ciencia Ficción</a></li>
-                                        <li><a class="dropdown-item" href="#">Terror</a></li>
+                                        <li><a class="dropdown-item" onclick="mostrarPeliculasGenero('Accion')" href="#">Acción</a></li>
+                                        <li><a class="dropdown-item" onclick="mostrarPeliculasGenero('Ciencia Ficcion')" href="#">Ciencia Ficción</a></li>
+                                        <li><a class="dropdown-item" onclick="mostrarPeliculasGenero('Terror')" href="#">Terror</a></li>
                                     </ul>
                                 </li>
                                  <li class="nav-item">
-                                    <a class="nav-link" href="#">Peliculas</a>
+                                    <a class="nav-link" onclick="crearCards(peliculas)" href="#peliculas">Peliculas</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">Series</a>
@@ -155,6 +155,7 @@
                 <div class="titulo-peliculas col-12">
                     <h2 class="text-white">Peliculas</h1>
                 </div>
+            <div class="row" id="peliculas"></div>
                 <!-- PENDIENTE -->
             </div>
         </main>
