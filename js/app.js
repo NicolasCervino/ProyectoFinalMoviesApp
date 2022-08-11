@@ -1,19 +1,38 @@
 class Movie {
-    constructor(tittle, cast, genre, duration) {
+    constructor(tittle, cast, genre, duration, img) {
         this.tittle = tittle;
         this.cast = cast;
         this.genre = genre;
         this.duration = duration;
+        this.img = img;
     }
 }
 
 // Ejemplos para poder testear
-const pelicula1 = new Movie("Thor: Love and Thunder", ["Chris Hemsworth", "Christian Bale", "Natalie Portman"], "Accion", "1h 59m");
-const pelicula2 = new Movie("Top Gun: Maverick", ["Tom Cruise", "Miles Teller", "Jennifer Connelly"], "Accion", "2h 11m");
-const pelicula3 = new Movie("Interestelar", ["Matthew McConaughey", "Anne Hathaway", "Jessica Chastain"], "Ciencia Ficcion", "2h 49m");
+const thor = new Movie(
+    "Thor: Love and Thunder",
+    ["Chris Hemsworth", "Christian Bale", "Natalie Portman"],
+    "Accion",
+    "1h 59m",
+    "https://www.themoviedb.org/t/p/original/rnayDLXLWF1q8gn2wpQRMwrjtn6.jpg"
+);
+const topGun = new Movie(
+    "Top Gun: Maverick",
+    ["Tom Cruise", "Miles Teller", "Jennifer Connelly"],
+    "Accion",
+    "2h 11m",
+    "https://www.themoviedb.org/t/p/original/jALOpRgEjKLWn5ZD01pGecHdCNt.jpg"
+);
+const interstelar = new Movie(
+    "Interestelar",
+    ["Matthew McConaughey", "Anne Hathaway", "Jessica Chastain"],
+    "Ciencia Ficcion",
+    "2h 49m",
+    "https://www.themoviedb.org/t/p/original/xJHokMbljvjADYdit5fK5VQsXEG.jpg"
+);
 
 const peliculas = [];
-peliculas.push(pelicula1, pelicula2, pelicula3);
+peliculas.push(thor, topGun, interstelar);
 
 // Permite ejecutar una busqueda
 function ejecutarBusqueda() {
@@ -77,7 +96,7 @@ function mostrarResultados(resultado) {
     }
 }
 
-ejecutarBusqueda();
+//ejecutarBusqueda();
 
 // Clase usuario, por ahora solo posee un nombre y una lista de peliculas
 class User {
@@ -100,30 +119,30 @@ class User {
     }
 }
 
-// Usuario de prueba
-const usuario = new User("Pedro");
+// Container donde van las cards de peliculas
+const container = document.getElementById("peliculas");
 
-// Muestro la lista vacia del usuario
-// console.log("Lista inicial del usuario " + usuario.username);
-// console.log(usuario.myList);
+// Crea una card para cada pelicula del array
+function crearCards(peliculas) {
+    container.innerHTML = "";
+    for (const pelicula of peliculas) {
+        let codigoCard = `  <div class="col-sm-3">
+                                <div class="card">
+                                    <img src=${pelicula.img} class="card-img-top" alt="...">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${pelicula.tittle}</h5>
+                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                    </div>
+                                </div>
+                            </div>`;
+        container.innerHTML += codigoCard;
+    }
+}
+crearCards(peliculas);
 
-// // Agrego 3 peliculas a la lista
-// usuario.agregarAMiLista(pelicula1); // Thor
-// usuario.agregarAMiLista(pelicula2); // Top Gun
-// usuario.agregarAMiLista(pelicula3); // Interstellar
-
-// // Muestro la lista con elementos
-// console.log("Lista despues de agregar elementos: ");
-// console.log(usuario.myList);
-// console.log(usuario.myList[0]);
-// console.log(usuario.myList[1]);
-// console.log(usuario.myList[2]);
-
-// // Elimino 2 peliculas
-// usuario.borrarDeMiLista(pelicula1); // Thor
-// usuario.borrarDeMiLista(pelicula3); // Interstellar
-
-// // Muestro la lista con solo 1 elemento
-// console.log("Lista despues de eliminar elementos: ");
-// console.log(usuario.myList);
-// console.log(usuario.myList[0]);
+// Permite crear cards solo para un genero especifico de peliculas
+// Esta funcion esta pensada para ser llamada desde el un enlace
+function mostrarPeliculasGenero(genero) {
+    container.innerHTML = "";
+    crearCards(filtrarPorGenero(genero));
+}
