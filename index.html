@@ -43,12 +43,15 @@
                         </button>
                         <div class="collapse navbar-collapse" id="navbarNavDropdown">
                             <!-- ENLACES -->
-                            <ul class="navbar-nav ms-auto">
+                            <ul class="navbar-nav">
                                 <li class="nav-item">
                                     <a class="nav-link active" aria-current="page" href="#">Inicio</a>
                                 </li>
                                  <li class="nav-item">
                                     <a class="nav-link" href="#">Mi Lista</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" onclick="crearCards(peliculas)" href="#peliculas">Peliculas</a>
                                 </li>
                                 <!-- DROPDOWN -->
                                 <li class="nav-item dropdown">
@@ -62,18 +65,20 @@
                                         Géneros
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" onclick="mostrarPeliculasGenero('Accion')" href="#">Acción</a></li>
-                                        <li><a class="dropdown-item" onclick="mostrarPeliculasGenero('Ciencia Ficcion')" href="#">Ciencia Ficción</a></li>
-                                        <li><a class="dropdown-item" onclick="mostrarPeliculasGenero('Terror')" href="#">Terror</a></li>
+                                        <li><a class="dropdown-item" onclick="mostrarPeliculasGenero('Accion')" href="#Accion">Acción</a></li>
+                                        <li><a class="dropdown-item" onclick="mostrarPeliculasGenero('Ciencia Ficcion')" href="#Ciencia Ficcion">Ciencia Ficción</a></li>
+                                        <li><a class="dropdown-item" onclick="mostrarPeliculasGenero('Terror')" href="#Terror">Terror</a></li>
                                     </ul>
                                 </li>
-                                 <li class="nav-item">
-                                    <a class="nav-link" onclick="crearCards(peliculas)" href="#peliculas">Peliculas</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">Series</a>
-                                </li>
+                                <!-- SEARCHBAR -->
                             </ul>
+                            <div class="search ms-auto">
+                                <div class="icon"></div>
+                                <div class="input">
+                                    <input class="d-none" type="text" placeholder="Busqueda" id="mySearch"/>
+                                </div>
+                                <span class="clear d-none"></span>
+                            </div>
                         </div>
                     </div>
                 </nav>
