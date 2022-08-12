@@ -1,10 +1,11 @@
 class Movie {
-    constructor(tittle, cast, genre, duration, img) {
+    constructor(tittle, cast, genre, duration, img, img2) {
         this.tittle = tittle;
         this.cast = cast;
         this.genre = genre;
         this.duration = duration;
-        this.img = img;
+        this.imgDesktop = img;
+        this.imgMobile = img2;
     }
 }
 
@@ -14,25 +15,28 @@ const thor = new Movie(
     ["Chris Hemsworth", "Christian Bale", "Natalie Portman"],
     "Accion",
     "1h 59m",
-    "https://www.themoviedb.org/t/p/original/rnayDLXLWF1q8gn2wpQRMwrjtn6.jpg"
+    "https://www.themoviedb.org/t/p/original/rnayDLXLWF1q8gn2wpQRMwrjtn6.jpg",
+    "https://www.themoviedb.org/t/p/original/kf9Bib75eduxt0QiVJO4pawfd9p.jpg"
 );
 const topGun = new Movie(
     "Top Gun: Maverick",
     ["Tom Cruise", "Miles Teller", "Jennifer Connelly"],
     "Accion",
     "2h 11m",
-    "https://www.themoviedb.org/t/p/original/jALOpRgEjKLWn5ZD01pGecHdCNt.jpg"
+    "https://www.themoviedb.org/t/p/original/jALOpRgEjKLWn5ZD01pGecHdCNt.jpg",
+    "https://www.themoviedb.org/t/p/original/AlWpEpQq0RgZIXVHAHZtFhEvRgd.jpg"
 );
 const interstelar = new Movie(
     "Interestelar",
     ["Matthew McConaughey", "Anne Hathaway", "Jessica Chastain"],
     "Ciencia Ficcion",
     "2h 49m",
-    "https://www.themoviedb.org/t/p/original/xJHokMbljvjADYdit5fK5VQsXEG.jpg"
+    "https://www.themoviedb.org/t/p/original/xJHokMbljvjADYdit5fK5VQsXEG.jpg",
+    "https://www.themoviedb.org/t/p/original/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg"
 );
 
 const peliculas = [];
-peliculas.push(thor, topGun, interstelar);
+peliculas.push(thor, topGun, interstelar, thor, thor, thor);
 
 // Permite ejecutar una busqueda
 function ejecutarBusqueda() {
@@ -120,33 +124,34 @@ class User {
 }
 
 // Container donde van las cards de peliculas
-const container = document.getElementById("peliculas");
+const containerPeliculas = document.getElementById("peliculas");
+
+// Permite crear una card para una pelicula
+function crearCard(pelicula) {
+    let codigoCard = `  <div class="col-6 col-sm-2 p-2">
+                                <div class="card">
+                                    <img src=${pelicula.imgMobile} class="card-img-top" alt="...">
+                                </div>
+                            </div>`;
+    containerPeliculas.innerHTML += codigoCard;
+    containerPeliculas.id = "peliculas";
+}
 
 // Crea una card para cada pelicula del array
 function crearCards(peliculas) {
-    container.innerHTML = "";
+    containerPeliculas.innerHTML = "";
     for (const pelicula of peliculas) {
-        let codigoCard = `  <div class="col-sm-3">
-                                <div class="card">
-                                    <img src=${pelicula.img} class="card-img-top" alt="...">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${pelicula.tittle}</h5>
-                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                    </div>
-                                </div>
-                            </div>`;
-        container.innerHTML += codigoCard;
-        container.id = "peliculas";
+        crearCard(pelicula);
     }
 }
-crearCards(peliculas);
+//crearCards(peliculas);
 
 // Permite crear cards solo para un genero especifico de peliculas
 // Esta funcion esta pensada para ser llamada desde el un enlace
 function mostrarPeliculasGenero(genero) {
-    container.innerHTML = "";
+    containerPeliculas.innerHTML = "";
     crearCards(filtrarPorGenero(genero));
-    container.id = genero;
+    containerPeliculas.id = genero;
 }
 
 // Eventos del boton de busqueda
@@ -162,6 +167,7 @@ icon.addEventListener("click", () => {
     searchInput.classList.toggle("d-none");
 });
 
+// Esto es para que el boton clear elimine el valor del input
 clear.addEventListener("click", () => {
     document.querySelector("#mySearch").value = "";
 });
@@ -172,3 +178,37 @@ searchInput.addEventListener("blur", () => {
     clear.classList.toggle("d-none");
     searchInput.classList.toggle("d-none");
 });
+
+// Distintas versiones de la funcion de busqueda
+function busqueda() {
+    containerPeliculas.innerHTML = "";
+    const texto = searchInput.value.toLowerCase();
+
+    for (let pelicula of peliculas) {
+        let titulo = pelicula.tittle.toLowerCase();
+        if (titulo.indexOf(texto) !== -1) {
+            crearCard(pelicula);
+        }
+    }
+    if (containerPeliculas.innerHTML === "") {
+        containerPeliculas.innerHTML += `<h1 style="color:white">Pelicula no encontrada</h1>`;
+    }
+}
+
+// Selecciona las peliculas que contengan el texto ingresado
+function busquedaV2() {
+    containerPeliculas.innerHTML = "";
+    const texto = searchInput.value.toLowerCase();
+    const resultado = peliculas.filter((pelicula) => pelicula.tittle.toLowerCase().includes(texto));
+    crearCards(resultado);
+}
+
+// Solo selecciona las peliculas que comienzen con el texto ingresado
+function busquedaV3() {
+    containerPeliculas.innerHTML = "";
+    const texto = searchInput.value.toLowerCase();
+    const resultado = peliculas.filter((pelicula) => pelicula.tittle.toLowerCase().startsWith(texto));
+    crearCards(resultado);
+}
+
+searchInput.addEventListener("keyup", busquedaV3);
