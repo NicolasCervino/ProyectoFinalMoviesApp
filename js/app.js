@@ -1,11 +1,12 @@
 class Movie {
-    constructor(tittle, cast, genre, duration, img, img2) {
+    constructor(tittle, cast, genre, duration, img, img2, description) {
         this.tittle = tittle;
         this.cast = cast;
         this.genre = genre;
         this.duration = duration;
         this.imgDesktop = img;
         this.imgMobile = img2;
+        this.description = description;
     }
 }
 
@@ -16,7 +17,8 @@ const thor = new Movie(
     "Accion",
     "1h 59m",
     "https://www.themoviedb.org/t/p/original/rnayDLXLWF1q8gn2wpQRMwrjtn6.jpg",
-    "https://www.themoviedb.org/t/p/original/kf9Bib75eduxt0QiVJO4pawfd9p.jpg"
+    "https://www.themoviedb.org/t/p/original/kf9Bib75eduxt0QiVJO4pawfd9p.jpg",
+    "Cuarta película sobre Thor del MCU, en la que el Dios del trueno contará con Lady Thor como acompañante, personaje que interpretará Natalie Portman."
 );
 const topGun = new Movie(
     "Top Gun: Maverick",
@@ -24,7 +26,8 @@ const topGun = new Movie(
     "Accion",
     "2h 11m",
     "https://www.themoviedb.org/t/p/original/jALOpRgEjKLWn5ZD01pGecHdCNt.jpg",
-    "https://www.themoviedb.org/t/p/original/AlWpEpQq0RgZIXVHAHZtFhEvRgd.jpg"
+    "https://www.themoviedb.org/t/p/original/AlWpEpQq0RgZIXVHAHZtFhEvRgd.jpg",
+    "Maverick, quien lleva 30 años de servicio, es ahora instructor de pilotos militares. Una última misión, un sacrificio final, obliga a este maestro de los cielos a enfrentar las heridas abiertas del pasado y sus temores más profundos."
 );
 const interstelar = new Movie(
     "Interestelar",
@@ -32,40 +35,28 @@ const interstelar = new Movie(
     "Ciencia Ficcion",
     "2h 49m",
     "https://www.themoviedb.org/t/p/original/xJHokMbljvjADYdit5fK5VQsXEG.jpg",
-    "https://www.themoviedb.org/t/p/original/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg"
+    "https://www.themoviedb.org/t/p/original/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+    "Un grupo de científicos y exploradores, encabezados por Cooper, se embarcan en un viaje espacial para encontrar un lugar con las condiciones necesarias para reemplazar a la Tierra y comenzar una nueva vida allí."
 );
 
+const predator = new Movie(
+    "Predator: La presa",
+    ["Amber Midthunder", "Dakota Beavers", "Dane DiLiegro"],
+    "Terror",
+    "1h 40m",
+    "https://www.themoviedb.org/t/p/original/7ZO9yoEU2fAHKhmJWfAc2QIPWJg.jpg",
+    "https://www.themoviedb.org/t/p/original/ujr5pztc1oitbe7ViMUOilFaJ7s.jpg",
+    "En 1719, una habilidosa guerrera comanche protege a su tribu de un depredador alienígena altamente evolucionado que caza humanos por deporte."
+);
+
+// Contiene a todas las peliculas
 const peliculas = [];
-peliculas.push(thor, topGun, interstelar, thor, thor, thor);
+peliculas.push(thor, topGun, interstelar, predator, thor, thor);
 
-// Permite ejecutar una busqueda
-function ejecutarBusqueda() {
-    console.log("Todas las peliculas: ");
-    console.table(peliculas); // Esto es para ayudar a visualizar mejor el resultado
-
-    let confirmar = true;
-
-    while (confirmar) {
-        let tipoDeBusqueda = parseInt(prompt("Que tipo de busqueda desea realizar? 1. Buscar por Genero 2. Buscar por Actor"));
-        switch (tipoDeBusqueda) {
-            case 1:
-                let genero = prompt("Ingrese el genero que desea buscar (por ahora solo Accion, Terror o Ciencia Ficcion");
-                alert("Revisa la consola para ver los resultados");
-                mostrarResultados(filtrarPorGenero(genero));
-                confirmar = false;
-                break;
-            case 2:
-                let actor = prompt("Ingrese el nombre de un actor o actiz para ver sus peliculas");
-                alert("Revisa la consola para ver los resultados");
-                mostrarResultados(filtrarPorActor(actor));
-                confirmar = false;
-                break;
-            default:
-                alert("El tipo de busqueda es invalido, debe ingresar un numero para seleccionar una opcion");
-                break;
-        }
-    }
-}
+// Contiene solo las peliculas destacadas que van en el carrousel (solo 3 peliculas)
+// IMPORTANTE: el tamaño de este array no puede ser menor a la cantidad de slides
+const peliculasDestacadas = [];
+peliculasDestacadas.push(thor, topGun, predator);
 
 // Funcion para filtrar peliculas por genero
 function filtrarPorGenero(genero) {
@@ -82,25 +73,6 @@ function filtrarPorGenero(genero) {
 function filtrarPorActor(actor) {
     return peliculas.filter((pelicula) => pelicula.cast.includes(actor));
 }
-
-// Se encarga de mostrar correctamente las peliculas de un resultado de busqueda
-function mostrarResultados(resultado) {
-    if (resultado.length == 0) {
-        console.log("Ninguna pelicula coincide con ese criterio de busqueda");
-    } else {
-        console.log("Resultados de busqueda");
-        resultado = resultado.map((movie) => {
-            return {
-                Titulo: movie.tittle,
-                Genero: movie.genre,
-                Reparto: movie.cast,
-            };
-        });
-        console.table(resultado);
-    }
-}
-
-//ejecutarBusqueda();
 
 // Clase usuario, por ahora solo posee un nombre y una lista de peliculas
 class User {
@@ -212,3 +184,42 @@ function busquedaV3() {
 }
 
 searchInput.addEventListener("keyup", busquedaV3);
+
+// El div padre de todos los elementos del carrousel
+const containerElementos = document.querySelector(".carousel-inner");
+
+// Permite crear los elementos del carrousel de imagenes de manera dinamica
+function crearElementoCarrousel(pelicula, divPadre) {
+    const codigo = `    <div class="img-overlay">
+                            <!-- Imagen Principal -->
+                            <img src=${pelicula.imgDesktop} class="d-none d-sm-block w-100" alt="..." />
+                            <!-- Imagen Mobile -->
+                            <img src=${pelicula.imgMobile} class="d-block d-sm-none w-100"/>
+                        </div>
+                        <div class="carousel-caption container">
+                            <div class="row w-50">
+                                <h2 class="text-start titulo-carrousel">${pelicula.tittle}</h2>
+                                <p class="text-start subtitulo-carrousel">
+                                    ${pelicula.description}
+                                </p>
+                            </div>
+                            <!-- Botones Carrousel -->
+                            <div class="btns">
+                                <button type="button" class="btn"><i class="fa-solid fa-plus"></i>Agregar a mi lista</button>
+                                <button type="button" class="btn">Mas información</button>
+                            </div>
+                        </div>`;
+    divPadre.innerHTML += codigo;
+}
+
+// Permite crear las slides para el carrousel
+function crearSlidesCarrousel() {
+    // Una coleccion html con todos los elementos hijos del container
+    const hijos = containerElementos.children;
+
+    for (let i = 0; i < hijos.length; i++) {
+        crearElementoCarrousel(peliculasDestacadas[i], hijos[i]);
+    }
+}
+
+crearSlidesCarrousel();
