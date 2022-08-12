@@ -136,6 +136,7 @@ function crearCards(peliculas) {
                                 </div>
                             </div>`;
         container.innerHTML += codigoCard;
+        container.id = "peliculas";
     }
 }
 crearCards(peliculas);
@@ -145,4 +146,29 @@ crearCards(peliculas);
 function mostrarPeliculasGenero(genero) {
     container.innerHTML = "";
     crearCards(filtrarPorGenero(genero));
+    container.id = genero;
 }
+
+// Eventos del boton de busqueda
+const icon = document.querySelector(".icon");
+const search = document.querySelector(".search");
+const clear = document.querySelector(".clear");
+const searchInput = document.querySelector("#mySearch");
+
+// Esto es para que se muestre o se oculte la barra al pulsar el icono
+icon.addEventListener("click", () => {
+    search.classList.toggle("active");
+    clear.classList.toggle("d-none");
+    searchInput.classList.toggle("d-none");
+});
+
+clear.addEventListener("click", () => {
+    document.querySelector("#mySearch").value = "";
+});
+
+// Esto es para que se oculte la barra al quitar el focus del input
+searchInput.addEventListener("blur", () => {
+    search.classList.toggle("active");
+    clear.classList.toggle("d-none");
+    searchInput.classList.toggle("d-none");
+});
