@@ -173,3 +173,18 @@ function crearSlidesCarrousel() {
 
 crearCards(peliculas);
 crearSlidesCarrousel();
+
+const header = document.querySelector("header");
+const navbar = document.querySelector("nav");
+
+// Permite que el fondo del navbar cambie al realizar un scroll
+window.onscroll = function () {
+    const top = window.scrollY;
+    if (top >= 120) {
+        header.classList.add("bg-dark");
+        navbar.classList.add("bg-dark");
+    } else {
+        header.classList.remove("bg-dark");
+        navbar.classList.remove("bg-dark");
+    }
+};

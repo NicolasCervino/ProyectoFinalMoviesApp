@@ -3,6 +3,12 @@
 /* Fuente Bebas */
 @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
 
+header {
+    position: fixed;
+    z-index: 999;
+    background: transparent;
+}
+
 .logo {
     font-family: "Bebas Neue", cursive;
     color: #e50914;
@@ -162,7 +168,7 @@
     box-shadow: 0px 3px 10px #e50914;
     transition: 0.3s linear;
     cursor: pointer;
-    z-index: 999;
+    z-index: 100;
 }
 
 .carousel-caption .btns button:nth-child(2) {
@@ -204,11 +210,11 @@
 
 @media only screen and (max-width: 991px) {
     .search.active {
-        width: 80vw;
+        width: 40vw;
         margin: 10px auto;
     }
     .search .input {
-        width: 70vw;
+        width: 30vw;
     }
 
     .carousel-caption .row {
