@@ -1,11 +1,11 @@
 // Contiene a todas las peliculas
 const peliculas = [];
-peliculas.push(thor, topGun, interstelar, predator, thor, thor);
+peliculas.push(thor, topGun, interstelar, predator, bladeRunner, spiderman);
 
 // Contiene solo las peliculas destacadas que van en el carrousel (solo 3 peliculas)
 // IMPORTANTE: el tamaño de este array no puede ser menor a la cantidad de slides
 const peliculasDestacadas = [];
-peliculasDestacadas.push(thor, topGun, predator);
+peliculasDestacadas.push(spiderman, bladeRunner, predator);
 
 // Funcion para filtrar peliculas por genero
 function filtrarPorGenero(genero) {
@@ -171,4 +171,5 @@ function crearSlidesCarrousel() {
     }
 }
 
+crearCards(peliculas);
 crearSlidesCarrousel();
