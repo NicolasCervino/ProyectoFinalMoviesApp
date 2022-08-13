@@ -18,11 +18,6 @@ function filtrarPorGenero(genero) {
     return resultado;
 }
 
-// Funcion para filtrar peliculas por actor/actriz
-function filtrarPorActor(actor) {
-    return peliculas.filter((pelicula) => pelicula.cast.includes(actor));
-}
-
 // Clase usuario, por ahora solo posee un nombre y una lista de peliculas
 class User {
     constructor(username) {
@@ -61,14 +56,16 @@ function crearCard(pelicula) {
 // Crea una card para cada pelicula del array
 function crearCards(peliculas) {
     containerPeliculas.innerHTML = "";
+
     for (const pelicula of peliculas) {
         crearCard(pelicula);
+        const titulo = document.querySelector(".titulo-peliculas h3");
+        titulo.innerText = "Peliculas: ";
     }
 }
-//crearCards(peliculas);
 
 // Permite crear cards solo para un genero especifico de peliculas
-// Esta funcion esta pensada para ser llamada desde el un enlace
+// Esta funcion esta pensada para ser llamada desde el un enlace en el nav
 function mostrarPeliculasGenero(genero) {
     containerPeliculas.innerHTML = "";
     crearCards(filtrarPorGenero(genero));
@@ -100,40 +97,43 @@ searchInput.addEventListener("blur", () => {
     searchInput.classList.toggle("d-none");
 });
 
-// Distintas versiones de la funcion de busqueda
+// Buscador
+// Modifica el container de peliculas con aquellas que coincidan con el texto ingresado
 function busqueda() {
     containerPeliculas.innerHTML = "";
-    const texto = searchInput.value.toLowerCase();
+    const titulo = document.querySelector(".titulo-peliculas h3");
+    titulo.innerText = "Resultados de busqueda:";
 
-    for (let pelicula of peliculas) {
-        let titulo = pelicula.tittle.toLowerCase();
-        if (titulo.indexOf(texto) !== -1) {
-            crearCard(pelicula);
-        }
+    const texto = searchInput.value.toLowerCase();
+    // Filtro solo las peliculas que coincidan
+    const resultado = peliculas.filter((pelicula) => coincide(pelicula, texto));
+
+    if (resultado.length != 0) {
+        crearCards(resultado);
+        titulo.innerText = "Resultados de busqueda:";
+    } else {
+        containerPeliculas.innerHTML += `<h1 style="color:white">Ninguna pelicula coincide con la busqueda</h1>`;
     }
-    if (containerPeliculas.innerHTML === "") {
-        containerPeliculas.innerHTML += `<h1 style="color:white">Pelicula no encontrada</h1>`;
+}
+
+// Indica si hay alguna coincidencia entre una pelicula y un texto
+function coincide(pelicula, texto) {
+    // Aplico la funcion map al cast para convertir todos los actores a minusculas
+    let actores = pelicula.cast.map((actor) => actor.toLowerCase());
+    // Filtro solo aquellos actores que coincidan con el texto
+    actores = actores.filter((actor) => actor.startsWith(texto));
+    // Devuelvo si el titulo o al menos 1 actor coincide con el texto ingresado
+    return pelicula.tittle.toLowerCase().startsWith(texto) || actores.length != 0;
+}
+
+// Ejercuta la funcion busqueda() al pulsar la tecla enter en el input
+searchInput.addEventListener("keydown", (ev) => {
+    if (ev.key == "Enter" && searchInput.value != 0) {
+        busqueda();
     }
-}
+});
 
-// Selecciona las peliculas que contengan el texto ingresado
-function busquedaV2() {
-    containerPeliculas.innerHTML = "";
-    const texto = searchInput.value.toLowerCase();
-    const resultado = peliculas.filter((pelicula) => pelicula.tittle.toLowerCase().includes(texto));
-    crearCards(resultado);
-}
-
-// Solo selecciona las peliculas que comienzen con el texto ingresado
-function busquedaV3() {
-    containerPeliculas.innerHTML = "";
-    const texto = searchInput.value.toLowerCase();
-    const resultado = peliculas.filter((pelicula) => pelicula.tittle.toLowerCase().startsWith(texto));
-    crearCards(resultado);
-}
-
-searchInput.addEventListener("keyup", busquedaV3);
-
+// Carrousel de peliculas
 // El div padre de todos los elementos del carrousel
 const containerElementos = document.querySelector(".carousel-inner");
 
