@@ -36,8 +36,7 @@ header {
     transition: 0.21s;
     overflow: hidden;
 }
-/* .search .active */
-/* Dejando un espacio entre .search y .active no funciona */
+
 .search.active {
     width: 300px;
     background: #fff;
@@ -134,6 +133,24 @@ header {
 .clear:hover::before {
     background: #e50914;
 }
+/* ESTILOS BOTON USUARIO */
+.btn-user {
+    border-radius: 25%;
+    background: transparent;
+    border: none;
+}
+.fa-user {
+    color: #fff;
+}
+
+.btn-user:hover {
+    background: #e50914;
+    box-shadow: 0px 3px 10px #e50914;
+    border: 2px solid #e50914;
+}
+.btn-user:hover .fa-user {
+    color: #fff;
+}
 
 /* Carrousel */
 .carousel-caption .titulo-carrousel {
@@ -201,20 +218,29 @@ header {
 /* Estilos card */
 .card {
     width: 80%;
+    overflow: hidden;
 }
 
-.card:hover {
+.card img {
+    transition: transform 0.3s linear;
+}
+.card:hover img {
+    transform: scale(1.2);
+    /* filter: blur(2px); */
+    opacity: 0.65;
+}
+/* .card:hover {
     transition: transform 0.5s;
     transform: scale(0.95);
-}
+} */
 
 @media only screen and (max-width: 991px) {
     .search.active {
-        width: 40vw;
+        width: 30vw;
         margin: 10px auto;
     }
     .search .input {
-        width: 30vw;
+        width: 20vw;
     }
 
     .carousel-caption .row {

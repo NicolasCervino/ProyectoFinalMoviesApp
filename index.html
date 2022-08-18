@@ -48,7 +48,7 @@
                                     <a class="nav-link active text-center" aria-current="page" href="#">Inicio</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-center" href="#">Mi Lista</a>
+                                    <a class="nav-link text-center" onclick="mostrarMiLista()" href="#">Mi Lista</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-center" onclick="crearCards(peliculas)" href="#peliculas">Peliculas</a>
@@ -81,14 +81,22 @@
                                         </li>
                                     </ul>
                                 </li>
-                                <!-- SEARCHBAR -->
                             </ul>
-                            <div class="search ms-auto">
-                                <div class="icon"></div>
-                                <div class="input">
-                                    <input class="d-none" type="text" spellcheck="false" placeholder="Busqueda" id="mySearch" />
+                            <div class="ms-auto d-flex align-items-center justify-content-center">
+                                <!-- SEARCHBAR -->
+                                <div class="search">
+                                    <div class="icon"></div>
+                                    <div class="input">
+                                        <input class="d-none" type="text" spellcheck="false" placeholder="Busqueda" id="mySearch" />
+                                    </div>
+                                    <span class="clear d-none"></span>
                                 </div>
-                                <span class="clear d-none"></span>
+                                <!-- USER ICON -->
+                                <div class="user ms-md-1">
+                                    <button type="button" class="btn btn-user btn-light">
+                                        <i class="fa-solid fa-user"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
