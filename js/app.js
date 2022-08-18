@@ -69,6 +69,8 @@ function crearCards(peliculas) {
 function mostrarPeliculasGenero(genero) {
     containerPeliculas.innerHTML = "";
     crearCards(filtrarPorGenero(genero));
+    const titulo = document.querySelector(".titulo-peliculas h3");
+    titulo.innerText = genero + ":";
     containerPeliculas.id = genero;
 }
 
@@ -177,14 +179,26 @@ crearSlidesCarrousel();
 const header = document.querySelector("header");
 const navbar = document.querySelector("nav");
 
+const navbarMenu = document.querySelector("#navbarNavDropdown");
+
 // Permite que el fondo del navbar cambie al realizar un scroll
-window.onscroll = function () {
+window.addEventListener("scroll", () => {
     const top = window.scrollY;
     if (top >= 120) {
         header.classList.add("bg-dark");
         navbar.classList.add("bg-dark");
-    } else {
+    } else if (!navbarMenu.classList.contains("show")) {
         header.classList.remove("bg-dark");
         navbar.classList.remove("bg-dark");
     }
-};
+});
+
+// Permite que el fondo del nav se oscurezca al pulsar el boton en modo mobile
+const botonNav = document.querySelector(".navbar-toggler");
+botonNav.addEventListener("click", () => {
+    const top = window.scrollY;
+    if (top < 120) {
+        header.classList.toggle("bg-dark");
+        navbar.classList.toggle("bg-dark");
+    }
+});
