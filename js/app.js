@@ -1,12 +1,3 @@
-// Contiene a todas las peliculas
-const peliculas = [];
-peliculas.push(thor, topGun, interstelar, predator, bladeRunner, spiderman);
-
-// Contiene solo las peliculas destacadas que van en el carrousel (solo 3 peliculas)
-// IMPORTANTE: el tamaño de este array no puede ser menor a la cantidad de slides
-const peliculasDestacadas = [];
-peliculasDestacadas.push(spiderman, bladeRunner, predator);
-
 // Funcion para filtrar peliculas por genero
 function filtrarPorGenero(genero) {
     let resultado = [];
@@ -23,11 +14,15 @@ class User {
     constructor(username) {
         this.username = username;
         this.myList = [];
+        // Guardo la lista al inicializar el usuario en el localStorage
+        localStorage.setItem("listaPeliculas", JSON.stringify(this.myList));
     }
     // Metodo que permite agregar una pelicula a la lista del usuario
     agregarAMiLista(pelicula) {
         if (!this.myList.includes(pelicula)) {
             this.myList.push(pelicula);
+            // Agrega la pelicula al local storage
+            localStorage.setItem("listaPeliculas", JSON.stringify(this.myList));
         }
     }
     // Metodo que permite eliminar una pelicula de la lista del usuario
@@ -35,12 +30,11 @@ class User {
         let indice = this.myList.indexOf(pelicula);
         if (indice != -1) {
             this.myList.splice(indice, 1);
+            // Actualizo la lista en el local storage
+            localStorage.setItem("listaPeliculas", JSON.stringify(this.myList));
         }
     }
 }
-
-// Container donde van las cards de peliculas
-const containerPeliculas = document.getElementById("peliculas");
 
 // Permite crear una card para una pelicula
 function crearCard(pelicula) {
@@ -59,8 +53,7 @@ function crearCards(peliculas) {
 
     for (const pelicula of peliculas) {
         crearCard(pelicula);
-        const titulo = document.querySelector(".titulo-peliculas h3");
-        titulo.innerText = "Peliculas: ";
+        tituloPeliculas.innerText = "Peliculas: ";
     }
 }
 
@@ -69,16 +62,9 @@ function crearCards(peliculas) {
 function mostrarPeliculasGenero(genero) {
     containerPeliculas.innerHTML = "";
     crearCards(filtrarPorGenero(genero));
-    const titulo = document.querySelector(".titulo-peliculas h3");
-    titulo.innerText = genero + ":";
+    tituloPeliculas.innerText = genero + ":";
     containerPeliculas.id = genero;
 }
-
-// Eventos del boton de busqueda
-const icon = document.querySelector(".icon");
-const search = document.querySelector(".search");
-const clear = document.querySelector(".clear");
-const searchInput = document.querySelector("#mySearch");
 
 // Esto es para que se muestre o se oculte la barra al pulsar el icono
 icon.addEventListener("click", () => {
@@ -103,8 +89,7 @@ searchInput.addEventListener("blur", () => {
 // Modifica el container de peliculas con aquellas que coincidan con el texto ingresado
 function busqueda() {
     containerPeliculas.innerHTML = "";
-    const titulo = document.querySelector(".titulo-peliculas h3");
-    titulo.innerText = "Resultados de busqueda:";
+    tituloPeliculas.innerText = "Resultados de busqueda:";
 
     const texto = searchInput.value.toLowerCase();
     // Filtro solo las peliculas que coincidan
@@ -136,11 +121,10 @@ searchInput.addEventListener("keydown", (ev) => {
 });
 
 // Carrousel de peliculas
-// El div padre de todos los elementos del carrousel
-const containerElementos = document.querySelector(".carousel-inner");
 
 // Permite crear los elementos del carrousel de imagenes de manera dinamica
 function crearElementoCarrousel(pelicula, divPadre) {
+    const indice = peliculasDestacadas.indexOf(pelicula);
     const codigo = `    <div class="img-overlay">
                             <!-- Imagen Principal -->
                             <img src=${pelicula.imgDesktop} class="d-none d-sm-block w-100" alt="..." />
@@ -156,11 +140,21 @@ function crearElementoCarrousel(pelicula, divPadre) {
                             </div>
                             <!-- Botones Carrousel -->
                             <div class="btns">
-                                <button type="button" class="btn"><i class="fa-solid fa-plus"></i>Agregar a mi lista</button>
+                                <button type="button" class="btn" id=btnCarrouselAgregar${indice}><i class="fa-solid fa-plus"></i>Agregar a mi lista</button>
                                 <button type="button" class="btn">Mas información</button>
                             </div>
                         </div>`;
     divPadre.innerHTML += codigo;
+    agregarFuncionalidadSlide(pelicula, indice);
+}
+
+// Permite que funcionen los botones de un slide del carrousel
+// Recibe la pelicula a la que corresponde el slide y el indice de dicha pelicula en el array
+function agregarFuncionalidadSlide(pelicula, index) {
+    const btn = document.querySelector("#btnCarrouselAgregar" + index);
+    btn.addEventListener("click", () => {
+        user.agregarAMiLista(pelicula);
+    });
 }
 
 // Permite crear las slides para el carrousel
@@ -175,11 +169,6 @@ function crearSlidesCarrousel() {
 
 crearCards(peliculas);
 crearSlidesCarrousel();
-
-const header = document.querySelector("header");
-const navbar = document.querySelector("nav");
-
-const navbarMenu = document.querySelector("#navbarNavDropdown");
 
 // Permite que el fondo del navbar cambie al realizar un scroll
 window.addEventListener("scroll", () => {
@@ -202,3 +191,12 @@ botonNav.addEventListener("click", () => {
         navbar.classList.toggle("bg-dark");
     }
 });
+
+// Mi Lista
+
+// Permite mostrar las cards de las peliculas que el usuario agrega a su lista
+function mostrarMiLista() {
+    tituloPeliculas.innerText = "Mi Lista: ";
+    // Obtengo la lista del local storage
+    crearCards(JSON.parse(localStorage.getItem("listaPeliculas")));
+}
