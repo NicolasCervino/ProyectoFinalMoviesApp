@@ -7,10 +7,17 @@ class User {
     }
     // Metodo que permite agregar una pelicula a la lista del usuario
     agregarAMiLista(pelicula) {
-        if (!this.myList.includes(pelicula)) {
+        // if (!this.myList.includes(pelicula)) {
+        // Si uso includes al recargar la pagina da error porque la pelicula que agrego desde localstorage
+        // no es igual a la pelicula que el usuario tenia originalmente
+
+        if (this.myList.find((pel) => pel.tittle == pelicula.tittle) == undefined) {
             this.myList.push(pelicula);
             // Agrega la pelicula al local storage
             localStorage.setItem("listaPeliculas", JSON.stringify(this.myList));
+            if (tituloPeliculas.innerText == "Mi Lista:") {
+                mostrarMiLista();
+            }
         }
     }
     // Metodo que permite eliminar una pelicula de la lista del usuario
@@ -20,6 +27,9 @@ class User {
             this.myList.splice(indice, 1);
             // Actualizo la lista en el local storage
             localStorage.setItem("listaPeliculas", JSON.stringify(this.myList));
+        }
+        if (tituloPeliculas.innerText == "Mi Lista:") {
+            mostrarMiLista();
         }
     }
 }

@@ -113,11 +113,37 @@ function crearElementoCarrousel(pelicula, divPadre) {
                             </div>
                             <!-- Botones Carrousel -->
                             <div class="btns">
-                                <button type="button" class="btn" id=btnCarrouselAgregar${indice}><i class="fa-solid fa-plus"></i>Agregar a mi lista</button>
-                                <button type="button" class="btn">Mas información</button>
+                                <button type="button" class="btn" id=btnCarrouselAgregar${indice}><i class="fa-solid fa-plus"></i><span>Agregar a mi lista</span></button>
+                                <button type="button" class="btn"><span>Mas información</span></button>
                             </div>
                         </div>`;
-    divPadre.innerHTML += codigo;
+
+    const codigo2 = `    <div class="img-overlay">
+                            <!-- Imagen Principal -->
+                            <img src=${pelicula.imgDesktop} class="d-none d-sm-block w-100" alt="..." />
+                            <!-- Imagen Mobile -->
+                            <img src=${pelicula.imgMobile} class="d-block d-sm-none w-100"/>
+                        </div>
+                        <div class="carousel-caption container">
+                            <div class="row w-50">
+                                <h2 class="text-start titulo-carrousel">${pelicula.tittle}</h2>
+                                <p class="text-start subtitulo-carrousel">
+                                    ${pelicula.description}
+                                </p>
+                            </div>
+                            <!-- Botones Carrousel -->
+                            <div class="btns">
+                                <button type="button" class="btn onList" id=btnCarrouselAgregar${indice}><i class="fa-solid fa-check"></i><span> En mi lista</span></button>
+                                <button type="button" class="btn"><span>Mas información</span></button>
+                            </div>
+                        </div>`;
+    // Si la pelicula ya esta en la lista al recargar la pagina, se carga el codigo2
+    // Esto es para poder mantener la lista en local storage hasta que se pulse el boton de cerrar sesion
+    if (JSON.parse(localStorage.listaPeliculas).find((pel) => pel.tittle == pelicula.tittle) != undefined) {
+        divPadre.innerHTML += codigo2;
+    } else {
+        divPadre.innerHTML += codigo;
+    }
     agregarFuncionalidadSlide(pelicula, indice);
 }
 
@@ -125,17 +151,60 @@ function crearElementoCarrousel(pelicula, divPadre) {
 // Recibe la pelicula a la que corresponde el slide y el indice de dicha pelicula en el array
 function agregarFuncionalidadSlide(pelicula, index) {
     const btn = document.querySelector("#btnCarrouselAgregar" + index);
+
     btn.addEventListener("click", () => {
         if (JSON.parse(localStorage.getItem("usuario")) != null) {
-            user.agregarAMiLista(pelicula);
-            if (tituloPeliculas.innerText == "Mi Lista:") {
-                mostrarMiLista();
+            // El usuario existe y la pelicula no esta en la lista
+            if (user.myList.find((pel) => pel.tittle == pelicula.tittle) == undefined) {
+                user.agregarAMiLista(pelicula);
+                btn.classList.add("onList");
             }
-        } else {
-            // alert("Debe iniciar sesion antes de poder agregar peliculas");
-            // Violation: "click" handler took 951ms
+            // El usuario existe y la pelicula ya esta en la lista
+            else if (user.myList.find((pel) => pel.tittle == pelicula.tittle) != undefined) {
+                user.borrarDeMiLista(pelicula);
+                btn.classList.remove("onList");
+            }
+            modificarBotonClick(btn);
         }
     });
+
+    btn.addEventListener("mouseenter", () => {
+        if (JSON.parse(localStorage.getItem("usuario")) != null) {
+            modificarBotonMouseEnter(btn, pelicula);
+        }
+    });
+    btn.addEventListener("mouseleave", () => {
+        if (JSON.parse(localStorage.getItem("usuario")) != null) {
+            modificarBotonMouseLeave(btn, pelicula);
+        }
+    });
+}
+
+// Modifica el estilo del boton del carrousel al hacer click
+function modificarBotonClick(boton) {
+    // El usuario existe y la pelicula no esta en la lista
+    if (boton.classList.contains("onList")) {
+        boton.children[0].classList.replace("fa-plus", "fa-check");
+        boton.children[1].innerHTML = "<span> En mi lista</span>";
+    } else {
+        boton.children[0].classList.replace("fa-minus", "fa-plus");
+        boton.children[1].innerHTML = "<span>Agregar a mi lista</span>";
+    }
+}
+// Modifica el estilo del boton del carrousel al pasar el mouse por encima
+function modificarBotonMouseEnter(boton) {
+    // El usuario existe y la pelicula ya esta en la lista
+    if (boton.classList.contains("onList")) {
+        boton.children[0].classList.replace("fa-check", "fa-minus");
+        boton.children[1].innerHTML = "<span> Eliminar de mi lista</span>";
+    }
+}
+// Modifica el estilo del boton del carrousel al quitar el mouse de encima
+function modificarBotonMouseLeave(boton) {
+    if (boton.classList.contains("onList")) {
+        boton.children[0].classList.replace("fa-minus", "fa-check");
+        boton.children[1].innerHTML = "<span> En mi lista</span>";
+    }
 }
 
 // Permite crear las slides para el carrousel
@@ -225,6 +294,7 @@ function agregarFuncionalidadModal(boton) {
         localStorage.removeItem("usuario");
         crearModalLogin();
         crearCards(peliculas);
+        location.reload();
     });
 }
 
@@ -233,7 +303,7 @@ function crearModalLogin() {
                         <!-- Texto -->
                         <div class="row">
                             <div class="col-12">
-                                <h1 class="titulo-modal" style="font-family: Bebas, cursive;">Iniciar Sesion</h1>
+                                <h1 class="titulo-modal" style='font-family: "Bebas Neue", cursive;'>Iniciar Sesion</h1>
                                 <p>Ingrese su usuario y contraseña!</p>
                             </div>
                         </div>
@@ -242,7 +312,7 @@ function crearModalLogin() {
                             <!-- Input Username -->
                             <div class="col-12">
                                 <div class="form-outline">
-                                    <input type="text" id="inputUsername" class="form-control form-control-sm"
+                                    <input type="text" id="inputUsername" autocomplete="off" class="form-control form-control-sm"
                                         required />
                                     <label class="form-label" for="inputUsername">Username</label>
                                 </div>
