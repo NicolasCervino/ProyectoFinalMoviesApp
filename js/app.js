@@ -217,6 +217,7 @@ function crearSlidesCarrousel() {
     }
 }
 
+localStorage.setItem("listaPeliculas", JSON.stringify([]));
 crearCards(peliculas);
 crearSlidesCarrousel();
 
