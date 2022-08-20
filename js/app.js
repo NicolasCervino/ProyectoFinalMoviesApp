@@ -126,7 +126,15 @@ function crearElementoCarrousel(pelicula, divPadre) {
 function agregarFuncionalidadSlide(pelicula, index) {
     const btn = document.querySelector("#btnCarrouselAgregar" + index);
     btn.addEventListener("click", () => {
-        user.agregarAMiLista(pelicula);
+        if (user != "") {
+            user.agregarAMiLista(pelicula);
+            if (tituloPeliculas.innerText == "Mi Lista:") {
+                mostrarMiLista();
+            }
+        } else {
+            // alert("Debe iniciar sesion antes de poder agregar peliculas");
+            // Violation: "click" handler took 951ms
+        }
     });
 }
 
@@ -169,7 +177,115 @@ botonNav.addEventListener("click", () => {
 
 // Permite mostrar las cards de las peliculas que el usuario agrega a su lista
 function mostrarMiLista() {
+    // Obtengo la lista del local storage y compruebo que exista
     tituloPeliculas.innerText = "Mi Lista: ";
-    // Obtengo la lista del local storage
-    crearCards(JSON.parse(localStorage.getItem("listaPeliculas")));
+    if (user.myList) {
+        // Operador ternario
+        user.myList.length > 0
+            ? crearCards(JSON.parse(localStorage.getItem("listaPeliculas")))
+            : (containerPeliculas.innerHTML = `<h1 style="color:white">La lista esta vacia</h1>`);
+        tituloPeliculas.innerText = "Mi Lista: ";
+    } else {
+        containerPeliculas.innerHTML = `<h1 style="color:white">Debe iniciar sesion para ver su lista de peliculas</h1>`;
+    }
 }
+
+// Usuarios
+
+// Modifica el modal de login para mostrar el panel de usuario
+function crearModalUsuario() {
+    const codigo = `  <div class="container p-4">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h1 class="titulo-modal" style="font-family: Bebas, cursive;">Usuario: ${user.username}</h1>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 d-flex justify-content-center py-4">
+                                    <i class="fas fa-user-circle" style="font-size:8.5rem;"></i>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <button class="btn btn-danger w-100 btn-cerrarSesion" id="cerrarSesion" data-bs-dismiss="modal">Cerrar Sesión</button>
+                                </div>
+                            </div>
+                        </div>`;
+    contenidoModal.innerHTML = codigo;
+    const botonCerrarSesion = document.querySelector(".btn-cerrarSesion");
+    agregarFuncionalidadModal(botonCerrarSesion);
+}
+
+function agregarFuncionalidadModal(boton) {
+    boton.addEventListener("click", () => {
+        user = ""; // Elimino al usuario actual
+        localStorage.setItem("listaPeliculas", ""); // Elimino la lista de peliculas del local storage
+        crearModalLogin();
+        crearCards(peliculas);
+    });
+}
+
+function crearModalLogin() {
+    const codigo = `<div class="container p-4">
+                        <!-- Texto -->
+                        <div class="row">
+                            <div class="col-12">
+                                <h1 class="titulo-modal" style="font-family: Bebas, cursive;">Iniciar Sesion</h1>
+                                <p>Ingrese su usuario y contraseña!</p>
+                            </div>
+                        </div>
+
+                        <form class="row" id="loginForm" action="">
+                            <!-- Input Username -->
+                            <div class="col-12">
+                                <div class="form-outline">
+                                    <input type="text" id="inputUsername" class="form-control form-control-sm"
+                                        required />
+                                    <label class="form-label" for="inputUsername">Username</label>
+                                </div>
+                            </div>
+                            <!-- Input Password -->
+                            <div class="col-12">
+                                <div class="form-outline">
+                                    <input type="password" id="inputPassword" class="form-control form-control-sm"
+                                        required />
+                                    <label class="form-label" for="inputPassword">Password</label>
+                                </div>
+                            </div>
+                            <!-- LOGIN BUTTON -->
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-danger btn-sm px-4" data-bs-dismiss=""
+                                    id="loginSubmit">Login</button>
+                            </div>
+                        </form>
+                        <!-- SIGN UP -->
+                        <div class="col-12">
+                            <p class="subtitulo-registro mb-0">No tienes una cuenta? <a href="#!"
+                                    class="text-white-50 fw-bold">Regístrate</a>
+                            </p>
+                        </div>
+                    </div>`;
+    contenidoModal.innerHTML = codigo;
+    const formularioLogin = document.querySelector("#loginForm");
+
+    agregarFuncionalidadModalLogin(formularioLogin);
+}
+
+function agregarFuncionalidadModalLogin(formulario) {
+    const inputLogin = document.querySelector("#inputUsername");
+    const inputPassword = document.querySelector("#inputPassword");
+    const botonSubmit = document.querySelector("#loginSubmit");
+    formulario.addEventListener("submit", (e) => {
+        e.preventDefault();
+        user = new User(inputLogin.value, inputPassword.value);
+        crearModalUsuario();
+    });
+    formulario.addEventListener("change", () => {
+        // Permite que el boton de submit cierre el modal
+        if (inputLogin.value != "" && inputPassword.value != "") {
+            botonSubmit.dataset.bsDismiss = "modal";
+        }
+    });
+}
+
+crearModalLogin();

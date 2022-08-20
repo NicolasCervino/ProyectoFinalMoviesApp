@@ -91,3 +91,9 @@ const header = document.querySelector("header");
 const navbar = document.querySelector("nav");
 
 const navbarMenu = document.querySelector("#navbarNavDropdown");
+
+// MODAL
+const loginModal = document.querySelector("#loginModal");
+const contenidoModal = document.querySelector(".modal-content");
+const tituloModal = document.querySelector(".titulo-modal");
+const registro = document.querySelector(".subtitulo-registro");
