@@ -126,7 +126,7 @@ function crearElementoCarrousel(pelicula, divPadre) {
 function agregarFuncionalidadSlide(pelicula, index) {
     const btn = document.querySelector("#btnCarrouselAgregar" + index);
     btn.addEventListener("click", () => {
-        if (user != "") {
+        if (JSON.parse(localStorage.getItem("usuario")) != null) {
             user.agregarAMiLista(pelicula);
             if (tituloPeliculas.innerText == "Mi Lista:") {
                 mostrarMiLista();
@@ -179,10 +179,10 @@ botonNav.addEventListener("click", () => {
 function mostrarMiLista() {
     // Obtengo la lista del local storage y compruebo que exista
     tituloPeliculas.innerText = "Mi Lista: ";
-    if (user.myList) {
+    if (JSON.parse(localStorage.getItem("usuario")) != null) {
         // Operador ternario
         user.myList.length > 0
-            ? crearCards(JSON.parse(localStorage.getItem("listaPeliculas")))
+            ? crearCards(user.myList)
             : (containerPeliculas.innerHTML = `<h1 style="color:white">La lista esta vacia</h1>`);
         tituloPeliculas.innerText = "Mi Lista: ";
     } else {
@@ -194,10 +194,11 @@ function mostrarMiLista() {
 
 // Modifica el modal de login para mostrar el panel de usuario
 function crearModalUsuario() {
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
     const codigo = `  <div class="container p-4">
                             <div class="row">
                                 <div class="col-12">
-                                    <h1 class="titulo-modal" style="font-family: Bebas, cursive;">Usuario: ${user.username}</h1>
+                                    <h1 class="titulo-modal" style="font-family: Bebas, cursive;">Usuario: ${usuario.username}</h1>
                                 </div>
                             </div>
                             <div class="row">
@@ -216,10 +217,12 @@ function crearModalUsuario() {
     agregarFuncionalidadModal(botonCerrarSesion);
 }
 
+// Permite que funcione el boton de cerrar sesion
 function agregarFuncionalidadModal(boton) {
     boton.addEventListener("click", () => {
         user = ""; // Elimino al usuario actual
         localStorage.setItem("listaPeliculas", ""); // Elimino la lista de peliculas del local storage
+        localStorage.removeItem("usuario");
         crearModalLogin();
         crearCards(peliculas);
     });
@@ -270,7 +273,7 @@ function crearModalLogin() {
 
     agregarFuncionalidadModalLogin(formularioLogin);
 }
-
+// Permite iniciar sesion
 function agregarFuncionalidadModalLogin(formulario) {
     const inputLogin = document.querySelector("#inputUsername");
     const inputPassword = document.querySelector("#inputPassword");
@@ -278,6 +281,8 @@ function agregarFuncionalidadModalLogin(formulario) {
     formulario.addEventListener("submit", (e) => {
         e.preventDefault();
         user = new User(inputLogin.value, inputPassword.value);
+        // Almaceno al usuario en el local storage
+        localStorage.setItem("usuario", JSON.stringify(user));
         crearModalUsuario();
     });
     formulario.addEventListener("change", () => {
@@ -288,4 +293,16 @@ function agregarFuncionalidadModalLogin(formulario) {
     });
 }
 
-crearModalLogin();
+window.addEventListener("load", () => {
+    if (JSON.parse(localStorage.getItem("usuario")) == null) {
+        crearModalLogin();
+    } else {
+        // AL recargar la pagina necesito volver a crear al usuario con los datos guardados
+        const usuarioAlmacenado = JSON.parse(localStorage.getItem("usuario"));
+        const listaAlmacenada = JSON.parse(localStorage.getItem("listaPeliculas"));
+
+        user = new User(usuarioAlmacenado.username, usuarioAlmacenado.password);
+        user.myList = listaAlmacenada;
+        crearModalUsuario();
+    }
+});

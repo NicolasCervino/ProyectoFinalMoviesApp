@@ -4,8 +4,6 @@ class User {
         this.username = username;
         this.password = password; // Probablemente no sea muy seguro guardar la contraseña de esta forma ._.
         this.myList = [];
-        // Guardo la lista al inicializar el usuario en el localStorage
-        localStorage.setItem("listaPeliculas", JSON.stringify(this.myList));
     }
     // Metodo que permite agregar una pelicula a la lista del usuario
     agregarAMiLista(pelicula) {
