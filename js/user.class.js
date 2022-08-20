@@ -1,7 +1,8 @@
-// Clase usuario, por ahora solo posee un nombre y una lista de peliculas
+// Clase usuario, posee un nombre, contraseña y una lista de peliculas
 class User {
-    constructor(username) {
+    constructor(username, password) {
         this.username = username;
+        this.password = password; // Probablemente no sea muy seguro guardar la contraseña de esta forma ._.
         this.myList = [];
         // Guardo la lista al inicializar el usuario en el localStorage
         localStorage.setItem("listaPeliculas", JSON.stringify(this.myList));
