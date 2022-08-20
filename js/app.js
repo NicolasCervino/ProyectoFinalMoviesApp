@@ -221,7 +221,7 @@ function crearModalUsuario() {
 function agregarFuncionalidadModal(boton) {
     boton.addEventListener("click", () => {
         user = ""; // Elimino al usuario actual
-        localStorage.setItem("listaPeliculas", ""); // Elimino la lista de peliculas del local storage
+        localStorage.setItem("listaPeliculas", JSON.stringify([])); // Elimino la lista de peliculas del local storage
         localStorage.removeItem("usuario");
         crearModalLogin();
         crearCards(peliculas);
@@ -284,6 +284,9 @@ function agregarFuncionalidadModalLogin(formulario) {
         // Almaceno al usuario en el local storage
         localStorage.setItem("usuario", JSON.stringify(user));
         crearModalUsuario();
+        // if (tituloPeliculas.innerText == "Mi lista:") {
+        //     mostrarMiLista();
+        // }
     });
     formulario.addEventListener("change", () => {
         // Permite que el boton de submit cierre el modal
@@ -302,7 +305,7 @@ window.addEventListener("load", () => {
         const listaAlmacenada = JSON.parse(localStorage.getItem("listaPeliculas"));
 
         user = new User(usuarioAlmacenado.username, usuarioAlmacenado.password);
-        user.myList = listaAlmacenada;
+        user.myList = listaAlmacenada || []; // Uso la lista que esta guardada o una vacia en caso de que no exista
         crearModalUsuario();
     }
 });
