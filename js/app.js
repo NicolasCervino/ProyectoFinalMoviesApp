@@ -217,7 +217,11 @@ function crearSlidesCarrousel() {
     }
 }
 
-localStorage.setItem("listaPeliculas", JSON.stringify([]));
+// Crea la lista en local storage en caso de que no exista,
+// sirve para cuando se abre la pagina en un navegador por primera vez
+if (!localStorage.getItem("listaPeliculas")) {
+    localStorage.setItem("listaPeliculas", JSON.stringify([]));
+}
 crearCards(peliculas);
 crearSlidesCarrousel();
 

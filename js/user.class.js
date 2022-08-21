@@ -22,12 +22,9 @@ class User {
     }
     // Metodo que permite eliminar una pelicula de la lista del usuario
     borrarDeMiLista(pelicula) {
-        let indice = this.myList.indexOf(pelicula);
-        if (indice != -1) {
-            this.myList.splice(indice, 1);
-            // Actualizo la lista en el local storage
-            localStorage.setItem("listaPeliculas", JSON.stringify(this.myList));
-        }
+        this.myList = this.myList.filter((pel) => pel.tittle != pelicula.tittle);
+        // Actualizo la lista en el local storage
+        localStorage.setItem("listaPeliculas", JSON.stringify(this.myList));
         if (tituloPeliculas.innerText == "Mi Lista:") {
             mostrarMiLista();
         }
