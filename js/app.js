@@ -12,10 +12,13 @@ function filtrarPorGenero(genero) {
 // Permite crear una card para una pelicula
 function crearCard(pelicula) {
     let codigoCard = `  <div class="col-6 col-sm-2 p-2">
+                            <div class="movie">
                                 <div class="card">
                                     <img src=${pelicula.imgMobile} class="card-img-top" alt="...">
                                 </div>
-                            </div>`;
+                                <h6 style='font-family: "Poppins", sans-serif;' class="text-white">${pelicula.tittle}</h6>
+                            </div>
+                        </div>`;
     containerPeliculas.innerHTML += codigoCard;
     containerPeliculas.id = "peliculas";
 }
@@ -219,9 +222,10 @@ function crearSlidesCarrousel() {
 
 // Crea la lista en local storage en caso de que no exista,
 // sirve para cuando se abre la pagina en un navegador por primera vez
-if (!localStorage.getItem("listaPeliculas")) {
-    localStorage.setItem("listaPeliculas", JSON.stringify([]));
-}
+// if (!localStorage.getItem("listaPeliculas")) {
+//     localStorage.setItem("listaPeliculas", JSON.stringify([]));
+// }
+localStorage.getItem("listaPeliculas") || localStorage.setItem("listaPeliculas", JSON.stringify([]));
 crearCards(peliculas);
 crearSlidesCarrousel();
 
@@ -272,7 +276,7 @@ function crearModalUsuario() {
     const codigo = `  <div class="container p-4">
                             <div class="row">
                                 <div class="col-12">
-                                    <h1 class="titulo-modal" style="font-family: Bebas, cursive;">Usuario: ${usuario.username}</h1>
+                                    <h1 class="titulo-modal" style='font-family: "Bebas Neue", cursive;'>Usuario: ${usuario.username}</h1>
                                 </div>
                             </div>
                             <div class="row">
