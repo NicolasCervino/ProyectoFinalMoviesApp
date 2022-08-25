@@ -11,10 +11,9 @@ function filtrarPorGenero(genero) {
 
 // Permite crear una card para una pelicula
 function crearCard(pelicula) {
-    const indice = peliculas.indexOf(pelicula);
     let codigoCard = `  <div class="col-6 col-sm-2 p-2">
                             <div class="movie">
-                                <div class="card cardPelicula position-relative" id=cardPelicula${indice}>
+                                <div class="card cardPelicula position-relative">
                                     <img src=${pelicula.imgMobile} class="card-img-top" alt="..." draggable="false">
                                     <button class="btn ${validarPeliculaBoton(
                                         pelicula
@@ -90,6 +89,20 @@ function modificarBotonEliminarCard(boton) {
     boton.children[0].classList.replace("fa-minus", "fa-plus");
 }
 
+// Modifica la card de una pelicula, se ejecuta cuando el usuario agrega o quita una pelicula de la lista
+function actualizarCard(pelicula, accion) {
+    //TODO
+    // SIN ESTO SI AGREGO UNA PELICULA DESDE EL CARROUSEL NO CAMBIA EL BOTON DE LA CARD
+    // FALTA AGREGAR ALGUN ID A CADA CARD PARA SABER A QUE PELICULA CORRESPONDE
+    switch (accion) {
+        case "agregar":
+            break;
+
+        case "quitar":
+            break;
+    }
+}
+
 // Permite crear cards solo para un genero especifico de peliculas
 // Esta funcion esta pensada para ser llamada desde el un enlace en el nav
 function mostrarPeliculasGenero(genero) {
@@ -157,7 +170,6 @@ searchInput.addEventListener("keydown", (ev) => {
 
 // Permite crear los elementos del carrousel de imagenes de manera dinamica
 function crearElementoCarrousel(pelicula, divPadre) {
-    const indice = peliculasDestacadas.indexOf(pelicula);
     const codigo = `    <div class="img-overlay">
                             <!-- Imagen Principal -->
                             <img src=${pelicula.imgDesktop} class="d-none d-sm-block w-100" alt="..." />
@@ -172,98 +184,26 @@ function crearElementoCarrousel(pelicula, divPadre) {
                                 </p>
                             </div>
                             <!-- Botones Carrousel -->
-                            <div class="btns">
-                                <button type="button" class="btn" id=btnCarrouselAgregar${indice}><i class="fa-solid fa-plus"></i><span>Agregar a mi lista</span></button>
+                            <div class="btns btns-${peliculasDestacadas.indexOf(pelicula)}">
+                                ${validarBotonSlide(pelicula)}
                                 <button type="button" class="btn"><span>Mas información</span></button>
                             </div>
                         </div>`;
+    divPadre.innerHTML += codigo;
+}
 
-    const codigo2 = `    <div class="img-overlay">
-                            <!-- Imagen Principal -->
-                            <img src=${pelicula.imgDesktop} class="d-none d-sm-block w-100" alt="..." />
-                            <!-- Imagen Mobile -->
-                            <img src=${pelicula.imgMobile} class="d-block d-sm-none w-100"/>
-                        </div>
-                        <div class="carousel-caption container">
-                            <div class="row w-50">
-                                <h2 class="text-start titulo-carrousel">${pelicula.tittle}</h2>
-                                <p class="text-start subtitulo-carrousel">
-                                    ${pelicula.description}
-                                </p>
-                            </div>
-                            <!-- Botones Carrousel -->
-                            <div class="btns">
-                                <button type="button" class="btn onList" id=btnCarrouselAgregar${indice}><i class="fa-solid fa-check"></i><span> En mi lista</span></button>
-                                <button type="button" class="btn"><span>Mas información</span></button>
-                            </div>
-                        </div>`;
-    // Si la pelicula ya esta en la lista al recargar la pagina, se carga el codigo2
-    // Esto es para poder mantener la lista en local storage hasta que se pulse el boton de cerrar sesion
-    if (JSON.parse(localStorage.listaPeliculas).find((pel) => pel.tittle == pelicula.tittle) != undefined) {
-        divPadre.innerHTML += codigo2;
+// Crea el boton de un slide dependiendo de si la pelicula esta o no en la lista del usuario
+function validarBotonSlide(pelicula) {
+    if (user != "" && user.estaEnLaLista(pelicula.tittle)) {
+        return `<button type="button" class="btn btn-slide btn-slide-remove">
+                    <i class="fa-solid fa-check"></i>
+                    <span> En mi lista</span>
+                </button>`;
     } else {
-        divPadre.innerHTML += codigo;
-    }
-    agregarFuncionalidadSlide(pelicula, indice);
-}
-
-// Permite que funcionen los botones de un slide del carrousel
-// Recibe la pelicula a la que corresponde el slide y el indice de dicha pelicula en el array
-function agregarFuncionalidadSlide(pelicula, index) {
-    const btn = document.querySelector("#btnCarrouselAgregar" + index);
-
-    btn.addEventListener("click", () => {
-        if (JSON.parse(localStorage.getItem("usuario")) != null) {
-            // El usuario existe y la pelicula no esta en la lista
-            if (!user.estaEnLaLista(pelicula.tittle)) {
-                user.agregarAMiLista(pelicula);
-                btn.classList.add("onList");
-            }
-            // El usuario existe y la pelicula ya esta en la lista
-            else if (user.estaEnLaLista(pelicula.tittle)) {
-                user.borrarDeMiLista(pelicula);
-                btn.classList.remove("onList");
-            }
-            modificarBotonClick(btn);
-        }
-    });
-
-    btn.addEventListener("mouseenter", () => {
-        if (JSON.parse(localStorage.getItem("usuario")) != null) {
-            modificarBotonMouseEnter(btn, pelicula);
-        }
-    });
-    btn.addEventListener("mouseleave", () => {
-        if (JSON.parse(localStorage.getItem("usuario")) != null) {
-            modificarBotonMouseLeave(btn, pelicula);
-        }
-    });
-}
-
-// Modifica el estilo del boton del carrousel al hacer click
-function modificarBotonClick(boton) {
-    // El usuario existe y la pelicula no esta en la lista
-    if (boton.classList.contains("onList")) {
-        boton.children[0].classList.replace("fa-plus", "fa-check");
-        boton.children[1].innerHTML = "<span> En mi lista</span>";
-    } else {
-        boton.children[0].classList.replace("fa-minus", "fa-plus");
-        boton.children[1].innerHTML = "<span>Agregar a mi lista</span>";
-    }
-}
-// Modifica el estilo del boton del carrousel al pasar el mouse por encima
-function modificarBotonMouseEnter(boton) {
-    // El usuario existe y la pelicula ya esta en la lista
-    if (boton.classList.contains("onList")) {
-        boton.children[0].classList.replace("fa-check", "fa-minus");
-        boton.children[1].innerHTML = "<span> Eliminar de mi lista</span>";
-    }
-}
-// Modifica el estilo del boton del carrousel al quitar el mouse de encima
-function modificarBotonMouseLeave(boton) {
-    if (boton.classList.contains("onList")) {
-        boton.children[0].classList.replace("fa-minus", "fa-check");
-        boton.children[1].innerHTML = "<span> En mi lista</span>";
+        return `<button type="button" class="btn btn-slide btn-slide-add">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Agregar a mi lista</span>
+                </button>`;
     }
 }
 
@@ -273,18 +213,67 @@ function crearSlidesCarrousel() {
     const hijos = containerElementos.children;
 
     for (let i = 0; i < hijos.length; i++) {
+        hijos[i].innerHTML = "";
         crearElementoCarrousel(peliculasDestacadas[i], hijos[i]);
+    }
+    agregarFuncionalidadSlides();
+}
+
+// Hace funcionales los botones del carrousel para todas las slides
+function agregarFuncionalidadSlides() {
+    const botones = document.querySelectorAll(".btns .btn-slide");
+    if (user != "") {
+        for (let i = 0; i < botones.length; i++) {
+            // Evento click
+            botones[i].addEventListener("click", () => {
+                if (botones[i].classList.contains("btn-slide-add")) {
+                    user.agregarAMiLista(peliculasDestacadas[i]);
+                } else {
+                    user.borrarDeMiLista(peliculasDestacadas[i]);
+                }
+            });
+
+            // Eventos hover
+            botones[i].addEventListener("mouseenter", () => {
+                if (botones[i].classList.contains("btn-slide-remove")) {
+                    botones[i].children[0].classList.replace("fa-check", "fa-minus");
+                    botones[i].children[1].innerText = " Eliminar de mi lista";
+                }
+            });
+
+            botones[i].addEventListener("mouseleave", () => {
+                if (botones[i].classList.contains("btn-slide-remove")) {
+                    botones[i].children[0].classList.replace("fa-minus", "fa-check");
+                    botones[i].children[1].innerText = " En mi lista";
+                }
+            });
+        }
+    }
+}
+
+// Cambia el aspecto del boton de un slide
+// Se ejecuta siempre que el usuario agregue o quite una pelicula a la lista
+function actualizarSlide(pelicula, accion) {
+    let indice = peliculasDestacadas.indexOf(pelicula);
+    const botones = document.querySelector(`.btns-${indice}`);
+    switch (accion) {
+        case "agregar":
+            botones.firstElementChild.children[0].classList.replace("fa-plus", "fa-check");
+            botones.firstElementChild.children[1].innerText = "En mi lista";
+            botones.firstElementChild.classList.replace("btn-slide-add", "btn-slide-remove");
+            break;
+
+        case "quitar":
+            botones.firstElementChild.children[0].classList.replace("fa-minus", "fa-plus");
+            botones.firstElementChild.children[1].innerText = "Agregar a mi lista";
+            botones.firstElementChild.classList.replace("btn-slide-remove", "btn-slide-add");
+            break;
     }
 }
 
 // Crea la lista en local storage en caso de que no exista,
 // sirve para cuando se abre la pagina en un navegador por primera vez
-// if (!localStorage.getItem("listaPeliculas")) {
-//     localStorage.setItem("listaPeliculas", JSON.stringify([]));
-// }
 localStorage.getItem("listaPeliculas") || localStorage.setItem("listaPeliculas", JSON.stringify([]));
-//crearCards(peliculas);
-crearSlidesCarrousel();
 
 // Permite que el fondo del navbar cambie al realizar un scroll
 window.addEventListener("scroll", () => {
@@ -421,6 +410,7 @@ function agregarFuncionalidadModalLogin(formulario) {
         localStorage.setItem("usuario", JSON.stringify(user));
         crearModalUsuario();
         crearCards(peliculas);
+        crearSlidesCarrousel();
     });
     formulario.addEventListener("change", () => {
         // Permite que el boton de submit cierre el modal
@@ -442,5 +432,6 @@ window.addEventListener("load", () => {
         user.myList = listaAlmacenada || []; // Uso la lista que esta guardada o una vacia en caso de que no exista
         crearModalUsuario();
     }
+    crearSlidesCarrousel();
     crearCards(peliculas);
 });

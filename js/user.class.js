@@ -7,14 +7,11 @@ class User {
     }
     // Metodo que permite agregar una pelicula a la lista del usuario
     agregarAMiLista(pelicula) {
-        // if (!this.myList.includes(pelicula)) {
-        // Si uso includes al recargar la pagina da error porque la pelicula que agrego desde localstorage
-        // no es igual a la pelicula que el usuario tenia originalmente
-
         if (!this.estaEnLaLista(pelicula.tittle)) {
             this.myList.push(pelicula);
-            // Agrega la pelicula al local storage
             localStorage.setItem("listaPeliculas", JSON.stringify(this.myList));
+            actualizarSlide(pelicula, "agregar");
+            actualizarCard(pelicula, "agregar");
             if (tituloPeliculas.innerText == "Mi Lista:") {
                 mostrarMiLista();
             }
@@ -25,6 +22,8 @@ class User {
         this.myList = this.myList.filter((pel) => pel.tittle != pelicula.tittle);
         // Actualizo la lista en el local storage
         localStorage.setItem("listaPeliculas", JSON.stringify(this.myList));
+        actualizarSlide(pelicula, "quitar");
+        actualizarCard(pelicula, "quitar");
         if (tituloPeliculas.innerText == "Mi Lista:") {
             mostrarMiLista();
         }
