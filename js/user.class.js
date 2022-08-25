@@ -11,7 +11,7 @@ class User {
         // Si uso includes al recargar la pagina da error porque la pelicula que agrego desde localstorage
         // no es igual a la pelicula que el usuario tenia originalmente
 
-        if (this.myList.find((pel) => pel.tittle == pelicula.tittle) == undefined) {
+        if (!this.estaEnLaLista(pelicula.tittle)) {
             this.myList.push(pelicula);
             // Agrega la pelicula al local storage
             localStorage.setItem("listaPeliculas", JSON.stringify(this.myList));
@@ -28,5 +28,10 @@ class User {
         if (tituloPeliculas.innerText == "Mi Lista:") {
             mostrarMiLista();
         }
+    }
+
+    // Permite saber si el usuario tiene una pelicula en su lista con dicho titulo
+    estaEnLaLista(tituloPelicula) {
+        return this.myList.find((pel) => pel.tittle == tituloPelicula) != undefined;
     }
 }
