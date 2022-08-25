@@ -11,16 +11,41 @@ function filtrarPorGenero(genero) {
 
 // Permite crear una card para una pelicula
 function crearCard(pelicula) {
+    const indice = peliculas.indexOf(pelicula);
     let codigoCard = `  <div class="col-6 col-sm-2 p-2">
                             <div class="movie">
-                                <div class="card">
-                                    <img src=${pelicula.imgMobile} class="card-img-top" alt="...">
+                                <div class="card cardPelicula position-relative" id=cardPelicula${indice}>
+                                    <img src=${pelicula.imgMobile} class="card-img-top" alt="..." draggable="false">
+                                    <button class="btn ${validarPeliculaBoton(
+                                        pelicula
+                                    )} d-none position-absolute top-50 start-50 translate-middle rounded-circle" style="background: #141619cf;">
+                                        ${validarPeliculaIcono(pelicula)}
+                                        
+                                    </button>
                                 </div>
                                 <h6 style='font-family: "Poppins", sans-serif;' class="text-white">${pelicula.tittle}</h6>
                             </div>
                         </div>`;
     containerPeliculas.innerHTML += codigoCard;
     containerPeliculas.id = "peliculas";
+}
+
+// Modifica la clase del boton dependiendo de si la pelicula esta o no en la lista del usuario
+function validarPeliculaBoton(pelicula) {
+    if (user != "" && user.estaEnLaLista(pelicula.tittle)) {
+        return "btn-card-quitar";
+    } else {
+        return "btn-card-agregar";
+    }
+}
+
+// Crea un icono para el boton dependiendo de si la pelicula esta o no en la lista del usuario
+function validarPeliculaIcono(pelicula) {
+    if (user != "" && user.estaEnLaLista(pelicula.tittle)) {
+        return `<i class="fa-solid fa-minus" style="color: #fff;"></i>`;
+    } else {
+        return `<i class="fa-solid fa-plus"  style="color: #fff;"></i>`;
+    }
 }
 
 // Crea una card para cada pelicula del array
@@ -31,6 +56,38 @@ function crearCards(peliculas) {
         crearCard(pelicula);
         tituloPeliculas.innerText = "Peliculas: ";
     }
+    agregarFuncionalidadCards(peliculas);
+}
+
+// Agrega los eventos a los botones de las cards para agregar o quitar peliculas
+function agregarFuncionalidadCards(peliculas) {
+    // Selecciono el boton
+    let botones = document.querySelectorAll(".cardPelicula .btn");
+    if (user != "") {
+        for (let i = 0; i < botones.length; i++) {
+            botones[i].addEventListener("click", () => {
+                if (botones[i].classList.contains("btn-card-agregar")) {
+                    user.agregarAMiLista(peliculas[i]);
+                    botones[i].classList.replace("btn-card-agregar", "btn-card-quitar");
+                    modificarBotonAgregarCard(botones[i]);
+                } else {
+                    user.borrarDeMiLista(peliculas[i]);
+                    botones[i].classList.replace("btn-card-quitar", "btn-card-agregar");
+                    modificarBotonEliminarCard(botones[i]);
+                }
+            });
+        }
+    }
+}
+
+// Modifica el icono del boton agregar
+function modificarBotonAgregarCard(boton) {
+    boton.children[0].classList.replace("fa-plus", "fa-minus");
+}
+
+// Modifica el icono del boton eliminar
+function modificarBotonEliminarCard(boton) {
+    boton.children[0].classList.replace("fa-minus", "fa-plus");
 }
 
 // Permite crear cards solo para un genero especifico de peliculas
@@ -158,12 +215,12 @@ function agregarFuncionalidadSlide(pelicula, index) {
     btn.addEventListener("click", () => {
         if (JSON.parse(localStorage.getItem("usuario")) != null) {
             // El usuario existe y la pelicula no esta en la lista
-            if (user.myList.find((pel) => pel.tittle == pelicula.tittle) == undefined) {
+            if (!user.estaEnLaLista(pelicula.tittle)) {
                 user.agregarAMiLista(pelicula);
                 btn.classList.add("onList");
             }
             // El usuario existe y la pelicula ya esta en la lista
-            else if (user.myList.find((pel) => pel.tittle == pelicula.tittle) != undefined) {
+            else if (user.estaEnLaLista(pelicula.tittle)) {
                 user.borrarDeMiLista(pelicula);
                 btn.classList.remove("onList");
             }
@@ -226,7 +283,7 @@ function crearSlidesCarrousel() {
 //     localStorage.setItem("listaPeliculas", JSON.stringify([]));
 // }
 localStorage.getItem("listaPeliculas") || localStorage.setItem("listaPeliculas", JSON.stringify([]));
-crearCards(peliculas);
+//crearCards(peliculas);
 crearSlidesCarrousel();
 
 // Permite que el fondo del navbar cambie al realizar un scroll
@@ -363,9 +420,7 @@ function agregarFuncionalidadModalLogin(formulario) {
         // Almaceno al usuario en el local storage
         localStorage.setItem("usuario", JSON.stringify(user));
         crearModalUsuario();
-        // if (tituloPeliculas.innerText == "Mi lista:") {
-        //     mostrarMiLista();
-        // }
+        crearCards(peliculas);
     });
     formulario.addEventListener("change", () => {
         // Permite que el boton de submit cierre el modal
@@ -387,4 +442,5 @@ window.addEventListener("load", () => {
         user.myList = listaAlmacenada || []; // Uso la lista que esta guardada o una vacia en caso de que no exista
         crearModalUsuario();
     }
+    crearCards(peliculas);
 });

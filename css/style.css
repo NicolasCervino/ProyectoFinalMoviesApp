@@ -229,10 +229,10 @@ header {
     /* filter: blur(2px); */
     opacity: 0.65;
 }
-/* .card:hover {
-    transition: transform 0.5s;
-    transform: scale(0.95);
-} */
+
+.card:hover .btn {
+    display: inline !important;
+}
 
 /* Boton cerrar sesion */
 .btn-cerrarSesion {
