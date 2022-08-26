@@ -256,18 +256,20 @@ function agregarFuncionalidadSlides() {
 function actualizarSlide(pelicula, accion) {
     let indice = peliculasDestacadas.indexOf(pelicula);
     const botones = document.querySelector(`.btns-${indice}`);
-    switch (accion) {
-        case "agregar":
-            botones.firstElementChild.children[0].classList.replace("fa-plus", "fa-check");
-            botones.firstElementChild.children[1].innerText = "En mi lista";
-            botones.firstElementChild.classList.replace("btn-slide-add", "btn-slide-remove");
-            break;
+    if (peliculasDestacadas.find((pel) => pel.tittle == pelicula.tittle) != undefined) {
+        switch (accion) {
+            case "agregar":
+                botones.firstElementChild.children[0].classList.replace("fa-plus", "fa-check");
+                botones.firstElementChild.children[1].innerText = "En mi lista";
+                botones.firstElementChild.classList.replace("btn-slide-add", "btn-slide-remove");
+                break;
 
-        case "quitar":
-            botones.firstElementChild.children[0].classList.replace("fa-minus", "fa-plus");
-            botones.firstElementChild.children[1].innerText = "Agregar a mi lista";
-            botones.firstElementChild.classList.replace("btn-slide-remove", "btn-slide-add");
-            break;
+            case "quitar":
+                botones.firstElementChild.children[0].classList.replace("fa-minus", "fa-plus");
+                botones.firstElementChild.children[1].innerText = "Agregar a mi lista";
+                botones.firstElementChild.classList.replace("btn-slide-remove", "btn-slide-add");
+                break;
+        }
     }
 }
 
