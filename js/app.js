@@ -11,9 +11,10 @@ function filtrarPorGenero(genero) {
 
 // Permite crear una card para una pelicula
 function crearCard(pelicula) {
+    const indice = peliculas.indexOf(pelicula);
     let codigoCard = `  <div class="col-6 col-sm-2 p-2">
                             <div class="movie">
-                                <div class="card cardPelicula position-relative">
+                                <div class="card cardPelicula cardPelicula${indice} position-relative">
                                     <img src=${pelicula.imgMobile} class="card-img-top" alt="..." draggable="false">
                                     <button class="btn ${validarPeliculaBoton(
                                         pelicula
@@ -67,11 +68,9 @@ function agregarFuncionalidadCards(peliculas) {
             botones[i].addEventListener("click", () => {
                 if (botones[i].classList.contains("btn-card-agregar")) {
                     user.agregarAMiLista(peliculas[i]);
-                    botones[i].classList.replace("btn-card-agregar", "btn-card-quitar");
                     modificarBotonAgregarCard(botones[i]);
                 } else {
                     user.borrarDeMiLista(peliculas[i]);
-                    botones[i].classList.replace("btn-card-quitar", "btn-card-agregar");
                     modificarBotonEliminarCard(botones[i]);
                 }
             });
@@ -81,25 +80,31 @@ function agregarFuncionalidadCards(peliculas) {
 
 // Modifica el icono del boton agregar
 function modificarBotonAgregarCard(boton) {
+    boton.classList.replace("btn-card-agregar", "btn-card-quitar");
     boton.children[0].classList.replace("fa-plus", "fa-minus");
 }
 
 // Modifica el icono del boton eliminar
 function modificarBotonEliminarCard(boton) {
+    boton.classList.replace("btn-card-quitar", "btn-card-agregar");
     boton.children[0].classList.replace("fa-minus", "fa-plus");
 }
 
 // Modifica la card de una pelicula, se ejecuta cuando el usuario agrega o quita una pelicula de la lista
 function actualizarCard(pelicula, accion) {
-    //TODO
-    // SIN ESTO SI AGREGO UNA PELICULA DESDE EL CARROUSEL NO CAMBIA EL BOTON DE LA CARD
-    // FALTA AGREGAR ALGUN ID A CADA CARD PARA SABER A QUE PELICULA CORRESPONDE
-    switch (accion) {
-        case "agregar":
-            break;
+    let indice = peliculas.indexOf(pelicula);
+    const card = document.querySelector(".cardPelicula" + indice);
 
-        case "quitar":
-            break;
+    if (card) {
+        switch (accion) {
+            case "agregar":
+                modificarBotonAgregarCard(card.children[1]);
+                break;
+
+            case "quitar":
+                modificarBotonEliminarCard(card.children[1]);
+                break;
+        }
     }
 }
 
