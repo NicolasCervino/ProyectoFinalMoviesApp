@@ -2,9 +2,8 @@
 function filtrarPorGenero(genero) {
     let resultado = [];
     for (let i = 0; i < peliculas.length; i++) {
-        if (peliculas[i].genre == genero) {
-            resultado.push(peliculas[i]);
-        }
+        // Operador AND
+        peliculas[i].genre == genero && resultado.push(peliculas[i]);
     }
     return resultado;
 }
@@ -30,22 +29,22 @@ function crearCard(pelicula) {
     containerPeliculas.id = "peliculas";
 }
 
+// Indica si el usuario existe y posee dicha pelicula en su lista
+function validarUsuarioYPelicula(pelicula) {
+    return user != "" && user.estaEnLaLista(pelicula.tittle);
+}
+
 // Modifica la clase del boton dependiendo de si la pelicula esta o no en la lista del usuario
 function validarPeliculaBoton(pelicula) {
-    if (user != "" && user.estaEnLaLista(pelicula.tittle)) {
-        return "btn-card-quitar";
-    } else {
-        return "btn-card-agregar";
-    }
+    // Operador Ternario
+    return validarUsuarioYPelicula(pelicula) ? "btn-card-quitar" : "btn-card-agregar";
 }
 
 // Crea un icono para el boton dependiendo de si la pelicula esta o no en la lista del usuario
 function validarPeliculaIcono(pelicula) {
-    if (user != "" && user.estaEnLaLista(pelicula.tittle)) {
-        return `<i class="fa-solid fa-minus" style="color: #fff;"></i>`;
-    } else {
-        return `<i class="fa-solid fa-plus"  style="color: #fff;"></i>`;
-    }
+    return validarUsuarioYPelicula(pelicula)
+        ? `<i class="fa-solid fa-minus" style="color: #fff;"></i>`
+        : `<i class="fa-solid fa-plus"  style="color: #fff;"></i>`;
 }
 
 // Crea una card para cada pelicula del array
@@ -199,17 +198,16 @@ function crearElementoCarrousel(pelicula, divPadre) {
 
 // Crea el boton de un slide dependiendo de si la pelicula esta o no en la lista del usuario
 function validarBotonSlide(pelicula) {
-    if (user != "" && user.estaEnLaLista(pelicula.tittle)) {
-        return `<button type="button" class="btn btn-slide btn-slide-remove">
+    // OPERADOR TERNARIO
+    return validarUsuarioYPelicula(pelicula)
+        ? `<button type="button" class="btn btn-slide btn-slide-remove">
                     <i class="fa-solid fa-check"></i>
                     <span> En mi lista</span>
-                </button>`;
-    } else {
-        return `<button type="button" class="btn btn-slide btn-slide-add">
+                </button>`
+        : `<button type="button" class="btn btn-slide btn-slide-add">
                     <i class="fa-solid fa-plus"></i>
                     <span>Agregar a mi lista</span>
                 </button>`;
-    }
 }
 
 // Permite crear las slides para el carrousel
@@ -231,11 +229,10 @@ function agregarFuncionalidadSlides() {
         for (let i = 0; i < botones.length; i++) {
             // Evento click
             botones[i].addEventListener("click", () => {
-                if (botones[i].classList.contains("btn-slide-add")) {
-                    user.agregarAMiLista(peliculasDestacadas[i]);
-                } else {
-                    user.borrarDeMiLista(peliculasDestacadas[i]);
-                }
+                // OPERADOR TERNARIO
+                botones[i].classList.contains("btn-slide-add")
+                    ? user.agregarAMiLista(peliculasDestacadas[i])
+                    : user.borrarDeMiLista(peliculasDestacadas[i]);
             });
 
             // Eventos hover
@@ -259,9 +256,10 @@ function agregarFuncionalidadSlides() {
 // Cambia el aspecto del boton de un slide
 // Se ejecuta siempre que el usuario agregue o quite una pelicula a la lista
 function actualizarSlide(pelicula, accion) {
-    let indice = peliculasDestacadas.indexOf(pelicula);
+    //let indice = peliculasDestacadas.indexOf(pelicula); // Esto no siempre funciona al recargar la pagina
+    let indice = peliculasDestacadas.indexOf(peliculasDestacadas.find((pel) => pel.tittle == pelicula.tittle));
     const botones = document.querySelector(`.btns-${indice}`);
-    if (peliculasDestacadas.find((pel) => pel.tittle == pelicula.tittle) != undefined) {
+    if (botones && indice != -1) {
         switch (accion) {
             case "agregar":
                 botones.firstElementChild.children[0].classList.replace("fa-plus", "fa-check");
@@ -270,6 +268,10 @@ function actualizarSlide(pelicula, accion) {
                 break;
 
             case "quitar":
+                // Esta linea tira ERROR al agregar una pelicula, actualizar la pagina y luego intentar borrarla
+                // desde la seccion de mi lista. Si se hace desde la pagina principal no da problemas
+                // Cannot read properties of null (reading 'firstElementChild')
+                // SE ARREGLO CAMBIANDO EL INDICE
                 botones.firstElementChild.children[0].classList.replace("fa-minus", "fa-plus");
                 botones.firstElementChild.children[1].innerText = "Agregar a mi lista";
                 botones.firstElementChild.classList.replace("btn-slide-remove", "btn-slide-add");
