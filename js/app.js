@@ -74,6 +74,10 @@ function agregarFuncionalidadCards(peliculas) {
                 }
             });
         }
+    } else {
+        for (let i = 0; i < botones.length; i++) {
+            botones[i].addEventListener("click", toastIniciarSesion);
+        }
     }
 }
 
@@ -249,6 +253,10 @@ function agregarFuncionalidadSlides() {
                     botones[i].children[1].innerText = " En mi lista";
                 }
             });
+        }
+    } else {
+        for (let i = 0; i < botones.length; i++) {
+            botones[i].addEventListener("click", toastIniciarSesion);
         }
     }
 }
@@ -428,6 +436,46 @@ function agregarFuncionalidadModalLogin(formulario) {
         }
     });
 }
+
+// FUNCION FLECHA
+// Crea un toast para cuando se intenta agregar una pelicula sin haber iniciado sesion
+const toastIniciarSesion = () => {
+    Swal.fire({
+        toast: true,
+        position: "top-end",
+        text: "Debe Iniciar Sesion para poder agregar peliculas",
+        showConfirmButton: false,
+        icon: "warning",
+        timer: 1500,
+        timerProgressBar: true,
+    });
+};
+
+// Crea un toast para cuando se agrega una pelicula a la lista
+const toastPeliculaAgregada = (pelicula) => {
+    Swal.fire({
+        toast: true,
+        position: "top-end",
+        text: `Se agrego ${pelicula.tittle} a la lista`,
+        showConfirmButton: false,
+        icon: "success",
+        timer: 1500,
+        timerProgressBar: true,
+    });
+};
+
+// Crea un toast para cuando se elimina una pelicula de la lista
+const toastPeliculaQuitada = (pelicula) => {
+    Swal.fire({
+        toast: true,
+        position: "top-end",
+        text: `Se elimino ${pelicula.tittle} de la lista`,
+        showConfirmButton: false,
+        icon: "error",
+        timer: 1500,
+        timerProgressBar: true,
+    });
+};
 
 window.addEventListener("load", () => {
     if (JSON.parse(localStorage.getItem("usuario")) == null) {

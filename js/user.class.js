@@ -12,6 +12,7 @@ class User {
             localStorage.setItem("listaPeliculas", JSON.stringify(this.myList));
             actualizarSlide(pelicula, "agregar");
             actualizarCard(pelicula, "agregar");
+            toastPeliculaAgregada(pelicula);
             if (tituloPeliculas.innerText == "Mi Lista:") {
                 mostrarMiLista();
             }
@@ -24,6 +25,7 @@ class User {
         localStorage.setItem("listaPeliculas", JSON.stringify(this.myList));
         actualizarSlide(pelicula, "quitar");
         actualizarCard(pelicula, "quitar");
+        toastPeliculaQuitada(pelicula);
         if (tituloPeliculas.innerText == "Mi Lista:") {
             mostrarMiLista();
         }
