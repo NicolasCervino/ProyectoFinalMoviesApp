@@ -681,7 +681,7 @@ function crearListaPeliculas(lista) {
     if (lista.length > 0) {
         for (let i = 0; i < lista.length; i++) {
             let elem = lista[i];
-            let movie = new Movie(elem.tittle, elem.cast, elem.genre, elem.duration, elem.imgDesktop, elem.imgMobie, elem.description);
+            let movie = new Movie(elem.tittle, elem.cast, elem.genre, elem.duration, elem.imgDesktop, elem.imgMobile, elem.description);
             movie.id = elem.id;
             nuevaLista.push(movie);
         }
