@@ -3,8 +3,9 @@
 /* Fuente Bebas */
 @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
 
-body {
-    background-color: #141414;
+.bg-dark {
+    /*Modifico la clase de bootstrap */
+    background-color: #141414 !important;
 }
 
 header {
