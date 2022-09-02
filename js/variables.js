@@ -1,4 +1,6 @@
 // Almacena todas las varibles globales
+// ID PARA LAS PELICULAS
+let nextId = 0;
 
 const thor = new Movie(
     "Thor: Love and Thunder",
@@ -66,6 +68,12 @@ peliculas.push(thor, topGun, interstelar, predator, bladeRunner, spiderman);
 // IMPORTANTE: el tamaño de este array no puede ser menor a la cantidad de slides
 const peliculasDestacadas = [];
 peliculasDestacadas.push(spiderman, bladeRunner, predator);
+
+// EL Container con la lista de peliculas del usuario
+const containerLista = document.querySelector(".container-lista");
+
+// El container donde se almacenan las busquedas
+const containerBusqueda = document.querySelector(".container-busqueda");
 
 // Almacena al usuario actual de la sesion
 let user = "";

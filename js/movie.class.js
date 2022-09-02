@@ -7,5 +7,6 @@ class Movie {
         this.imgDesktop = img;
         this.imgMobile = img2;
         this.description = description;
+        this.id = nextId++;
     }
 }
