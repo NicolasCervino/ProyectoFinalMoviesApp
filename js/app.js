@@ -652,13 +652,14 @@ function crearVentanaPrincipal() {
     document.getElementById("CienciaFiccion").innerHTML = "";
     document.getElementById("Terror").innerHTML = "";
 
-    crearCards(filtrarPorGenero("Accion"), document.getElementById("Accion"));
-    crearCards(filtrarPorGenero("Ciencia Ficcion"), document.getElementById("CienciaFiccion"));
+    crearCards(filtrarPorGenero("Acción"), document.getElementById("Accion"));
+    crearCards(filtrarPorGenero("Ciencia ficción"), document.getElementById("CienciaFiccion"));
     crearCards(filtrarPorGenero("Terror"), document.getElementById("Terror"));
     agregarFuncionalidadCards();
 }
 
 window.addEventListener("load", () => {
+    obtenerPeliculasPopulares();
     if (JSON.parse(localStorage.getItem("usuario")) == null) {
         crearModalLogin();
     } else {
@@ -671,10 +672,9 @@ window.addEventListener("load", () => {
         crearModalUsuario();
     }
     crearSlidesCarrousel();
-    crearVentanaPrincipal();
+    //crearVentanaPrincipal();
     mostrarVentanaPrincipal();
 });
-
 // Permite crear una lista de objetos Pelicula a partir de la lista guardada en local storage
 function crearListaPeliculas(lista) {
     let nuevaLista = [];
@@ -687,4 +687,65 @@ function crearListaPeliculas(lista) {
         }
     }
     return nuevaLista;
+}
+
+// Realiza una peticion a la API de TheMovieDB para obtener datos sobre las peliculas populares
+const obtenerPeliculasPopulares = async () => {
+    try {
+        // Obtiene las peliculas populares de la base de datos
+        const respuestaPopulares = await fetch(
+            "https://api.themoviedb.org/3/movie/popular?api_key=f3b242b5857fe6135b2f4c0420e0ba0b&language=es-ARG"
+        );
+        // Si la respuesta es correcta
+        if (respuestaPopulares.status === 200) {
+            let ids = [];
+            const datos = await respuestaPopulares.json();
+            datos.results.forEach((pelicula) => {
+                ids.push(pelicula.id);
+            });
+            // Nececito otra peticion para obtener datos extras de cada pelicula
+            return obtenerInfoPeliculas(ids);
+        }
+        // Posibles Errores
+        else if (respuesta.status === 401) {
+            console.log("La API KEY es invalida");
+        } else if (respuesta.status === 404) {
+            console.log("La pelicula no existe");
+        } else {
+            console.log("Hubo un error inesperado");
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+// Recibe un array con ids de peliculas de las cuales necesito obtener informacion extra
+const obtenerInfoPeliculas = async (idsPeliculasPopulares) => {
+    try {
+        console.log(idsPeliculasPopulares);
+        const infoPeliculas = [];
+        // Necesito hacer una peticion para cada id del array
+        for (const id of idsPeliculasPopulares) {
+            const res = await fetch(
+                `https://api.themoviedb.org/3/movie/${id}?api_key=f3b242b5857fe6135b2f4c0420e0ba0b&language=es-ARG&append_to_response=credits`
+            );
+            const json = await res.json();
+            const pelicula = construirPelicula(json);
+            peliculas.push(pelicula);
+        }
+        crearVentanaPrincipal();
+        return peliculas;
+    } catch (error) {
+        console.log(`ERROR: ${error}`);
+    }
+};
+
+// Construye un objeto pelicula a partir de los datos json obtenidos de la API
+function construirPelicula(json) {
+    let imgDesktop = `https://image.tmdb.org/t/p/original/${json.backdrop_path}`;
+    let imgMobile = `https://image.tmdb.org/t/p/w500/${json.poster_path}`;
+    let cast = json.credits.cast.map((actor) => actor.name);
+    let generos = json.genres.map((genero) => genero.name);
+
+    return new Movie(json.title, cast, generos[0], json.runtime, imgDesktop, imgMobile, json.overview, json.id);
 }
