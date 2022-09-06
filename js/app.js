@@ -709,26 +709,26 @@ const obtenerPeliculasPopulares = async () => {
         const respuestaPopulares = await fetch(
             "https://api.themoviedb.org/3/movie/popular?api_key=f3b242b5857fe6135b2f4c0420e0ba0b&language=es-ARG"
         );
-        // Obtengo la segunda pagina de la peticion
-        const respuestaPopulares2 = await fetch(
-            "https://api.themoviedb.org/3/movie/popular?api_key=f3b242b5857fe6135b2f4c0420e0ba0b&language=es-ARG&page=2"
-        );
 
-        let ids = [];
         // Si la respuesta es correcta
         if (respuestaPopulares.status === 200) {
-            //let ids = [];
+            let ids = [];
             const datos = await respuestaPopulares.json();
-            for (const pelicula of datos.results) {
-                ids.push(pelicula.id);
+            console.log(datos);
+
+            let page = 2;
+            // En total hay 35002 pages, 20 peliculas por pagina, NO necesito tantos datos
+            // El valor del bucle while define cuantas peliculas traigo
+            while (page < 4) {
+                const peticion2 = await fetch(
+                    `https://api.themoviedb.org/3/movie/popular?api_key=f3b242b5857fe6135b2f4c0420e0ba0b&language=es-ARG&page=${page}`
+                );
+                const datosExtra = await peticion2.json();
+                // Agrego los datos de la segunda peticion al resultado de la primera
+                datos.results.push(...datosExtra.results);
+                page++;
             }
-            // Nececito otra peticion para obtener datos extras de cada pelicula
-            // return obtenerInfoPeliculas(ids);
-        }
-        // Si la respuesta es correcta
-        if (respuestaPopulares2.status === 200) {
-            //let ids = [];
-            const datos = await respuestaPopulares2.json();
+
             for (const pelicula of datos.results) {
                 ids.push(pelicula.id);
             }
@@ -736,9 +736,9 @@ const obtenerPeliculasPopulares = async () => {
             return obtenerInfoPeliculas(ids);
         }
         // Posibles Errores
-        else if (respuestaPopulares.status === 401 || respuestaPopulares2.status === 401) {
+        else if (respuestaPopulares.status === 401) {
             console.log("La API KEY es invalida");
-        } else if (respuestaPopulares.status === 404 || respuestaPopulares2.status === 401) {
+        } else if (respuestaPopulares.status === 404) {
             console.log("La pelicula no existe");
         } else {
             console.log("Hubo un error inesperado");
