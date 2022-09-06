@@ -666,6 +666,7 @@ function crearVentanaPrincipal(res) {
 
     crearCards(filtrarPorGenero("Acción"), document.getElementById("Accion"));
     crearCards(filtrarPorGenero("Ciencia ficción"), document.getElementById("CienciaFiccion"));
+    crearCards(filtrarPorGenero("Drama"), document.getElementById("Drama"));
     crearCards(filtrarPorGenero("Terror"), document.getElementById("Terror"));
     crearCards(filtrarPorGenero("Animación"), document.getElementById("Animacion"));
     agregarFuncionalidadCards();
