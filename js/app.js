@@ -10,22 +10,16 @@ function filtrarPorGenero(genero) {
 
 // Devuelve el codigo para una card de una pelicula
 function crearCard(pelicula) {
-    const indice = peliculas.indexOf(pelicula);
-    let codigoCard = `  <div class="col-6 col-sm-2 p-2">
-                            <div class="movie">
-                                <div class="card cardPelicula cardPelicula${indice} position-relative" id=${pelicula.id}>
-                                    <img src=${pelicula.imgMobile} class="card-img-top" alt="..." draggable="false">
-                                    <button class="btn ${validarPeliculaBoton(
-                                        pelicula
-                                    )} d-none position-absolute top-50 start-50 translate-middle rounded-circle" style="background: #141619cf;" id="${
-        pelicula.id
-    }">
-                                        ${validarPeliculaIcono(pelicula)}
-                                        
-                                    </button>
-                                </div>
-                                <h6 style='font-family: "Poppins", sans-serif;' class="text-white">${pelicula.tittle}</h6>
+    let codigoCard = `  <div class="col-6 col-sm-3 col-xl-2 p-2">
+                            <div class="card cardPelicula cardPelicula${pelicula.id} position-relative" id=${pelicula.id}>
+                                <img src=${pelicula.imgMobile} class="card-img-top" alt="..." draggable="false">
+                                <button class="btn ${validarPeliculaBoton(pelicula)}
+                                d-none position-absolute top-50 start-50 translate-middle rounded-circle" style="background: #141619cf;" 
+                                id="${pelicula.id}"> 
+                                    ${validarPeliculaIcono(pelicula)}
+                                </button>
                             </div>
+                                <h6 style='font-family: "Poppins", sans-serif;' class="text-white">${pelicula.tittle}</h6>
                         </div>`;
     return codigoCard;
 }
@@ -189,11 +183,11 @@ function mostrarResultadosDeBusqueda() {
 // Indica si hay alguna coincidencia entre una pelicula y un texto
 function coincide(pelicula, texto) {
     // Aplico la funcion map al cast para convertir todos los actores a minusculas
-    let actores = pelicula.cast.map((actor) => actor.toLowerCase());
+    let actores = pelicula.cast.slice(0, 5).map((actor) => actor.toLowerCase());
     // Filtro solo aquellos actores que coincidan con el texto
     actores = actores.filter((actor) => actor.startsWith(texto));
     // Devuelvo si el titulo o al menos 1 actor coincide con el texto ingresado
-    return pelicula.tittle.toLowerCase().startsWith(texto) || actores.length != 0;
+    return pelicula.tittle.toLowerCase().includes(texto) || actores.length != 0;
 }
 
 // Ejercuta la funcion busqueda() al pulsar la tecla enter en el input
@@ -588,7 +582,7 @@ const crearSlideSwiper = (pelicula, img) => {
             image = pelicula.imgMobile;
             break;
     }
-    let codigoSwipe = ` <div class="swiper-slide position relative">
+    let codigoSwipe = ` <div class="swiper-slide position-relative">
                                 <img src=${image} class="mw-100 h-auto overflow-hidden swipe-card${
         pelicula.id
     }" alt="..." draggable="false">
@@ -604,32 +598,50 @@ const crearSlideSwiper = (pelicula, img) => {
 
 // Permite crear slides para un array de peliculas en el carrousel dado
 const crearSlidesSwiper = (peliculas, carrousel, img) => {
-    for (let i = 0; i < peliculas.length; i++) {
+    // Ordeno las peliculas segun su fecha de estreno
+    // Se usa el metodo slice() para no modificar el array original
+    let movies = peliculas.slice().sort(function (a, b) {
+        if (a.releaseDate.getTime() < b.releaseDate.getTime()) {
+            return 1;
+        }
+        if (a.releaseDate.getTime() > b.releaseDate.getTime()) {
+            return -1;
+        }
+        // a must be equal to b
+        return 0;
+    });
+    // Me quedo con solo los primeros 8 resultados para el carrosuel
+    movies = movies.slice(0, 8);
+    carrousel.removeAllSlides();
+    for (let i = 0; i < movies.length; i++) {
         slide = document.createElement("div");
         slide.classList.add("swiper-slide");
-        slide.innerHTML = crearSlideSwiper(peliculas[i], img);
+        slide.innerHTML = crearSlideSwiper(movies[i], img);
         carrousel.appendSlide(slide);
     }
     agregarFuncionalidadSlideSwiper();
 };
 
 const agregarFuncionalidadSlideSwiper = () => {
-    let botones = document.querySelectorAll(".swiper-slide .btn");
+    let swipes = document.querySelectorAll(".swiper-slide .position-relative");
     if (user != "") {
-        for (let i = 0; i < botones.length; i++) {
-            botones[i].addEventListener("click", () => {
-                if (botones[i].classList.contains("btn-card-agregar")) {
-                    user.agregarAMiLista(peliculas[i]);
-                    modificarBotonAgregarCard(botones[i]);
+        for (let i = 0; i < swipes.length; i++) {
+            let boton = swipes[i].children[1];
+            let idPelicula = swipes[i].children[0].classList[3].slice(10);
+            let pelicula = peliculas.find((pel) => pel.id == idPelicula);
+            boton.addEventListener("click", () => {
+                if (boton.classList.contains("btn-card-agregar")) {
+                    user.agregarAMiLista(pelicula);
+                    modificarBotonAgregarCard(boton);
                 } else {
-                    user.borrarDeMiLista(peliculas[i]);
-                    modificarBotonEliminarCard(botones[i]);
+                    user.borrarDeMiLista(pelicula);
+                    modificarBotonEliminarCard(boton);
                 }
             });
         }
     } else {
-        for (let i = 0; i < botones.length; i++) {
-            botones[i].addEventListener("click", toastIniciarSesion);
+        for (let i = 0; i < swipes.length; i++) {
+            swipes[i].children[1].addEventListener("click", toastIniciarSesion);
         }
     }
 };
@@ -645,8 +657,8 @@ function mostrarVentanaPrincipal() {
 }
 
 // Crea la venta principal con el slider de ultimos estrenos y las secciones por genero
-function crearVentanaPrincipal() {
-    crearSlidesSwiper(peliculas, swiperPeliculas, "imgMobile");
+function crearVentanaPrincipal(res) {
+    crearSlidesSwiper(res, swiperPeliculas, "imgMobile");
 
     document.getElementById("Accion").innerHTML = "";
     document.getElementById("CienciaFiccion").innerHTML = "";
@@ -655,6 +667,7 @@ function crearVentanaPrincipal() {
     crearCards(filtrarPorGenero("Acción"), document.getElementById("Accion"));
     crearCards(filtrarPorGenero("Ciencia ficción"), document.getElementById("CienciaFiccion"));
     crearCards(filtrarPorGenero("Terror"), document.getElementById("Terror"));
+    crearCards(filtrarPorGenero("Animación"), document.getElementById("Animacion"));
     agregarFuncionalidadCards();
 }
 
@@ -696,34 +709,54 @@ const obtenerPeliculasPopulares = async () => {
         const respuestaPopulares = await fetch(
             "https://api.themoviedb.org/3/movie/popular?api_key=f3b242b5857fe6135b2f4c0420e0ba0b&language=es-ARG"
         );
+        // Obtengo la segunda pagina de la peticion
+        const respuestaPopulares2 = await fetch(
+            "https://api.themoviedb.org/3/movie/popular?api_key=f3b242b5857fe6135b2f4c0420e0ba0b&language=es-ARG&page=2"
+        );
+
+        let ids = [];
         // Si la respuesta es correcta
         if (respuestaPopulares.status === 200) {
-            let ids = [];
+            //let ids = [];
             const datos = await respuestaPopulares.json();
-            datos.results.forEach((pelicula) => {
+            for (const pelicula of datos.results) {
                 ids.push(pelicula.id);
-            });
+            }
+            // Nececito otra peticion para obtener datos extras de cada pelicula
+            // return obtenerInfoPeliculas(ids);
+        }
+        // Si la respuesta es correcta
+        if (respuestaPopulares2.status === 200) {
+            //let ids = [];
+            const datos = await respuestaPopulares2.json();
+            for (const pelicula of datos.results) {
+                ids.push(pelicula.id);
+            }
             // Nececito otra peticion para obtener datos extras de cada pelicula
             return obtenerInfoPeliculas(ids);
         }
         // Posibles Errores
-        else if (respuesta.status === 401) {
+        else if (respuestaPopulares.status === 401 || respuestaPopulares2.status === 401) {
             console.log("La API KEY es invalida");
-        } else if (respuesta.status === 404) {
+        } else if (respuestaPopulares.status === 404 || respuestaPopulares2.status === 401) {
             console.log("La pelicula no existe");
         } else {
             console.log("Hubo un error inesperado");
         }
     } catch (error) {
         console.log(error);
+    } finally {
+        let spinners = document.querySelectorAll(".spinner-border");
+        for (let i = 0; i < spinners.length; i++) {
+            const spinner = spinners[i];
+            spinner.classList.add("d-none");
+        }
     }
 };
 
 // Recibe un array con ids de peliculas de las cuales necesito obtener informacion extra
 const obtenerInfoPeliculas = async (idsPeliculasPopulares) => {
     try {
-        console.log(idsPeliculasPopulares);
-        const infoPeliculas = [];
         // Necesito hacer una peticion para cada id del array
         for (const id of idsPeliculasPopulares) {
             const res = await fetch(
@@ -733,7 +766,7 @@ const obtenerInfoPeliculas = async (idsPeliculasPopulares) => {
             const pelicula = construirPelicula(json);
             peliculas.push(pelicula);
         }
-        crearVentanaPrincipal();
+        crearVentanaPrincipal(peliculas);
         return peliculas;
     } catch (error) {
         console.log(`ERROR: ${error}`);
@@ -747,5 +780,15 @@ function construirPelicula(json) {
     let cast = json.credits.cast.map((actor) => actor.name);
     let generos = json.genres.map((genero) => genero.name);
 
-    return new Movie(json.title, cast, generos[0], json.runtime, imgDesktop, imgMobile, json.overview, json.id);
+    return new Movie(
+        json.title,
+        cast,
+        generos[0],
+        json.runtime,
+        imgDesktop,
+        imgMobile,
+        json.overview,
+        json.id,
+        new Date(json.release_date)
+    );
 }
