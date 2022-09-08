@@ -14,12 +14,14 @@ function crearCard(pelicula) {
                             <div class="card cardPelicula cardPelicula${pelicula.id} position-relative" id=${pelicula.id}>
                                 <img src=${pelicula.imgMobile} class="card-img-top" alt="..." draggable="false">
                                 <button class="btn ${validarPeliculaBoton(pelicula)}
-                                d-none position-absolute top-50 start-50 translate-middle rounded-circle" style="background: #141619cf;" 
+                                d-none position-absolute top-50 start-50 translate-middle rounded-circle" style="background: #141619cf;z-index: 999;" 
                                 id="${pelicula.id}"> 
                                     ${validarPeliculaIcono(pelicula)}
                                 </button>
                             </div>
-                                <h6 style='font-family: "Poppins", sans-serif;' class="text-white">${pelicula.tittle}</h6>
+                                <h6 class="titulo-card text-white" data-bs-toggle="modal" data-bs-target="#movieInfoModal">
+                                    ${pelicula.tittle}
+                                </h6>
                         </div>`;
     return codigoCard;
 }
@@ -50,10 +52,19 @@ function crearCards(peliculas, container) {
     // agregarFuncionalidadCards(); Si llamo a crear cards mas de 1 vez le agrego el evento varias veces
 }
 
-// Agrega los eventos a los botones de las cards para agregar o quitar peliculas
+// Agrega los eventos a los botones de las cards para agregar o quitar peliculas y para abrir el modal
 function agregarFuncionalidadCards() {
     // Seleciono todas las cards
     let cards = document.querySelectorAll(".cardPelicula");
+
+    // Abrir modal info al pulsar en el titulo
+    for (let i = 0; i < cards.length; i++) {
+        let idPelicula = cards[i].id;
+        let pelicula = peliculas.find((pel) => pel.id == idPelicula);
+        cards[i].nextElementSibling.addEventListener("click", () => {
+            crearModalInfoPelicula(pelicula);
+        });
+    }
 
     // Si el user es vacio solo devuelvo un toast
     if (user != "") {
@@ -78,7 +89,8 @@ function agregarFuncionalidadCards() {
         }
     } else {
         for (let card of cards) {
-            card.addEventListener("click", toastIniciarSesion);
+            let botonCard = card.children[1];
+            botonCard.addEventListener("click", toastIniciarSesion);
         }
     }
 }
@@ -217,7 +229,8 @@ function crearElementoCarrousel(pelicula, divPadre) {
                             <!-- Botones Carrousel -->
                             <div class="btns btns-${peliculasDestacadas.indexOf(pelicula)}">
                                 ${validarBotonSlide(pelicula)}
-                                <button type="button" class="btn"><span>Mas información</span></button>
+                                <button type="button" class="btn btn-slide-info btn-slide-info-${pelicula.id}" data-bs-toggle="modal"
+                                    data-bs-target="#movieInfoModal"><span>Mas información</span></button>
                             </div>
                         </div>`;
     divPadre.innerHTML += codigo;
@@ -227,11 +240,11 @@ function crearElementoCarrousel(pelicula, divPadre) {
 function validarBotonSlide(pelicula) {
     // OPERADOR TERNARIO
     return validarUsuarioYPelicula(pelicula)
-        ? `<button type="button" class="btn btn-slide btn-slide-remove">
+        ? `<button type="button" class="btn btn-slide-list btn-slide-remove">
                     <i class="fa-solid fa-check"></i>
                     <span> En mi lista</span>
                 </button>`
-        : `<button type="button" class="btn btn-slide btn-slide-add">
+        : `<button type="button" class="btn btn-slide-list btn-slide-add">
                     <i class="fa-solid fa-plus"></i>
                     <span>Agregar a mi lista</span>
                 </button>`;
@@ -251,37 +264,121 @@ function crearSlidesCarrousel() {
 
 // Hace funcionales los botones del carrousel para todas las slides
 function agregarFuncionalidadSlides() {
-    const botones = document.querySelectorAll(".btns .btn-slide");
+    const botonesInfo = document.querySelectorAll(".btns .btn-slide-info");
+    const botonesLista = document.querySelectorAll(".btns .btn-slide-list");
+    // Botones Info
+    for (let i = 0; i < botonesInfo.length; i++) {
+        let idPelicula = botonesInfo[i].classList[2].slice(15);
+        let pelicula = peliculasDestacadas.find((pel) => pel.id == idPelicula);
+        botonesInfo[i].addEventListener("click", () => {
+            crearModalInfoPelicula(pelicula);
+        });
+    }
+
+    // Botones Lista
     if (user != "") {
-        for (let i = 0; i < botones.length; i++) {
+        for (let i = 0; i < botonesLista.length; i++) {
             // Evento click
-            botones[i].addEventListener("click", () => {
+            botonesLista[i].addEventListener("click", () => {
                 // OPERADOR TERNARIO
-                botones[i].classList.contains("btn-slide-add")
+                botonesLista[i].classList.contains("btn-slide-add")
                     ? user.agregarAMiLista(peliculasDestacadas[i])
                     : user.borrarDeMiLista(peliculasDestacadas[i]);
             });
 
             // Eventos hover
-            botones[i].addEventListener("mouseenter", () => {
-                if (botones[i].classList.contains("btn-slide-remove")) {
-                    botones[i].children[0].classList.replace("fa-check", "fa-minus");
-                    botones[i].children[1].innerText = " Eliminar de mi lista";
+            botonesLista[i].addEventListener("mouseenter", () => {
+                if (botonesLista[i].classList.contains("btn-slide-remove")) {
+                    botonesLista[i].children[0].classList.replace("fa-check", "fa-minus");
+                    botonesLista[i].children[1].innerText = " Eliminar de mi lista";
                 }
             });
 
-            botones[i].addEventListener("mouseleave", () => {
-                if (botones[i].classList.contains("btn-slide-remove")) {
-                    botones[i].children[0].classList.replace("fa-minus", "fa-check");
-                    botones[i].children[1].innerText = " En mi lista";
+            botonesLista[i].addEventListener("mouseleave", () => {
+                if (botonesLista[i].classList.contains("btn-slide-remove")) {
+                    botonesLista[i].children[0].classList.replace("fa-minus", "fa-check");
+                    botonesLista[i].children[1].innerText = " En mi lista";
                 }
             });
         }
     } else {
-        for (let i = 0; i < botones.length; i++) {
-            botones[i].addEventListener("click", toastIniciarSesion);
+        for (let i = 0; i < botonesLista.length; i++) {
+            botonesLista[i].addEventListener("click", toastIniciarSesion);
         }
     }
+}
+
+// Crea el modal para la info sobre una pelicula
+function crearModalInfoPelicula(pelicula) {
+    let codigo = `  <div class="modal-body p-0">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-12 p-0" style="height: 55vh;">
+                                    <img src="${pelicula.imgDesktop}" class="img-modalInfo w-100 h-100 position-relative">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container-fluid px-3 pt-2">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h3>${pelicula.tittle}</h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- Descripcion -->
+                                <div class="col-8">
+                                    <div class="col-12">
+                                        <span class="px-1" style="border-right: 1px solid #e50914;">${pelicula.releaseDate.getFullYear()}</span>
+                                        <span class="px-1" style="border-right: 1px solid #e50914;">${pelicula.duration}</span>
+                                        <span class="px-1" style="border-right: 1px solid #e50914;">${pelicula.genre}</span>
+                                        <span class="px-1">
+                                            ${pelicula.director ? '<span style="color:#777;"> Dirección:  </span>' + pelicula.director : ""}
+                                        </span>
+                                    </div>
+                                    <p>${pelicula.description}</p>
+                                </div>
+                                <!-- Elenco -->
+                                <div class="col-4 px-2">
+                                    <span style="color:#777;">
+                                        Elenco:
+                                    </span>
+                                    <ul class="px-3">
+                                        <li>
+                                            ${pelicula.cast[0] ? pelicula.cast[0] : "no hay datos"},
+                                        </li>
+                                        <li>
+                                            ${pelicula.cast[1] ? pelicula.cast[1] : "no hay datos"},
+                                        </li>
+                                        <li>
+                                            ${pelicula.cast[2] ? pelicula.cast[2] : "no hay datos"}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row">
+                                ${comprobarTrailer(pelicula)}
+                            </div>
+                        </div>
+                    </div>`;
+    contenidoModalPeliculas.innerHTML = codigo;
+}
+
+// Si la pelicula cuenta con una key de video crea un iframe a partir de dicha key
+function comprobarTrailer(pelicula) {
+    let resultado = "";
+    if (pelicula.videoKey) {
+        resultado = `   <div class="col-12 pb-3">
+                            <div class="ratio ratio-16x9">
+                                <iframe
+                                    src="https://www.youtube.com/embed/${pelicula.videoKey}" 
+                                        title="YouTube video player" frameborder="0" allow="accelerometer; 
+                                        autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                        allowfullscreen>
+                                </iframe>
+                            </div>
+                        </div> `;
+    }
+    return resultado;
 }
 
 // Cambia el aspecto del boton de un slide
@@ -715,7 +812,6 @@ const obtenerPeliculasPopulares = async () => {
         if (respuestaPopulares.status === 200) {
             let ids = [];
             const datos = await respuestaPopulares.json();
-            console.log(datos);
 
             let page = 2;
             // En total hay 35002 pages, 20 peliculas por pagina, NO necesito tantos datos
@@ -746,12 +842,6 @@ const obtenerPeliculasPopulares = async () => {
         }
     } catch (error) {
         console.log(error);
-    } finally {
-        let spinners = document.querySelectorAll(".spinner-border");
-        for (let i = 0; i < spinners.length; i++) {
-            const spinner = spinners[i];
-            spinner.classList.add("d-none");
-        }
     }
 };
 
@@ -761,7 +851,7 @@ const obtenerInfoPeliculas = async (idsPeliculasPopulares) => {
         // Necesito hacer una peticion para cada id del array
         for (const id of idsPeliculasPopulares) {
             const res = await fetch(
-                `https://api.themoviedb.org/3/movie/${id}?api_key=f3b242b5857fe6135b2f4c0420e0ba0b&language=es-ARG&append_to_response=credits`
+                `https://api.themoviedb.org/3/movie/${id}?api_key=f3b242b5857fe6135b2f4c0420e0ba0b&language=es-MX&append_to_response=credits,images,videos`
             );
             const json = await res.json();
             const pelicula = construirPelicula(json);
@@ -771,6 +861,12 @@ const obtenerInfoPeliculas = async (idsPeliculasPopulares) => {
         return peliculas;
     } catch (error) {
         console.log(`ERROR: ${error}`);
+    } finally {
+        let spinners = document.querySelectorAll(".spinner-border");
+        for (let i = 0; i < spinners.length; i++) {
+            const spinner = spinners[i];
+            spinner.classList.add("d-none");
+        }
     }
 };
 
@@ -781,15 +877,25 @@ function construirPelicula(json) {
     let cast = json.credits.cast.map((actor) => actor.name);
     let generos = json.genres.map((genero) => genero.name);
 
+    let director = json.credits.crew.find((crewMember) => crewMember.job == "Director");
+    // Algunas peliculas pueden no tener info sobre el cast
+    // Acceso Condicional
+    director = director?.name || null;
+    let video = json.videos.results[0];
+    // Acceso Condicional
+    video = video?.key || null;
+
     return new Movie(
         json.title,
         cast,
         generos[0],
-        json.runtime,
+        json.runtime + "m",
         imgDesktop,
         imgMobile,
         json.overview,
         json.id,
-        new Date(json.release_date)
+        new Date(json.release_date),
+        director,
+        video
     );
 }

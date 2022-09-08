@@ -244,6 +244,11 @@ header {
     display: inline !important;
 }
 
+.titulo-card {
+    font-family: "Poppins", sans-serif;
+    cursor: pointer;
+}
+
 /* Boton cerrar sesion */
 .btn-cerrarSesion {
     background: #e50914;
@@ -281,6 +286,12 @@ header {
 
 .swiper-slide:hover .btn {
     display: inline !important;
+}
+
+/* Modal InfoPeliculas */
+.img-modalInfo {
+    object-fit: cover;
+    object-position: center;
 }
 
 @media only screen and (max-width: 991px) {
