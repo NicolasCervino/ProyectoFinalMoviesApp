@@ -28,19 +28,19 @@ const bladeRunner = new Movie(
     "K8MLo5MO3Hg"
 );
 
-const spiderman = new Movie(
-    "Spider-Man: No Way Home",
-    ["Tom Holland", "Zendaya", "Benedict Cumberbatch"],
-    "Acción",
-    "2h 28m",
-    "https://www.themoviedb.org/t/p/original/cgEhsQWCq16yxeoHP15Ay9VdU0s.jpg",
-    "https://www.themoviedb.org/t/p/original/miZFgV81xG324rpUknQX8dtXuBl.jpg",
-    "Tras descubrirse la identidad secreta de Peter Parker como Spider-Man, la vida del joven se vuelve una locura. Peter le pide ayuda al Doctor Strange para recuperar su vida, pero algo sale mal y provoca una fractura en el multiverso.",
-    634649,
-    new Date("2021-12-15"),
-    "Jon Watts",
-    "xnhGsKgt0Sg"
-);
+// const spiderman = new Movie(
+//     "Spider-Man: No Way Home",
+//     ["Tom Holland", "Zendaya", "Benedict Cumberbatch"],
+//     "Acción",
+//     "2h 28m",
+//     "https://www.themoviedb.org/t/p/original/cgEhsQWCq16yxeoHP15Ay9VdU0s.jpg",
+//     "https://www.themoviedb.org/t/p/original/miZFgV81xG324rpUknQX8dtXuBl.jpg",
+//     "Tras descubrirse la identidad secreta de Peter Parker como Spider-Man, la vida del joven se vuelve una locura. Peter le pide ayuda al Doctor Strange para recuperar su vida, pero algo sale mal y provoca una fractura en el multiverso.",
+//     634649,
+//     new Date("2021-12-15"),
+//     "Jon Watts",
+//     "xnhGsKgt0Sg"
+// );
 
 // Contiene a todas las peliculas
 let peliculas = [];
@@ -49,7 +49,7 @@ peliculas.push(interstelar, bladeRunner);
 // Contiene solo las peliculas destacadas que van en el carrousel (solo 3 peliculas)
 // IMPORTANTE: el tamaño de este array no puede ser menor a la cantidad de slides
 const peliculasDestacadas = [];
-peliculasDestacadas.push(spiderman, bladeRunner, interstelar);
+//peliculasDestacadas.push(spiderman, bladeRunner, interstelar);
 
 // EL Container con la lista de peliculas del usuario
 const containerLista = document.querySelector(".container-lista");

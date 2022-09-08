@@ -223,7 +223,7 @@ function crearElementoCarrousel(pelicula, divPadre) {
                             <div class="row w-50">
                                 <h2 class="text-start titulo-carrousel">${pelicula.tittle}</h2>
                                 <p class="text-start subtitulo-carrousel">
-                                    ${pelicula.description}
+                                    ${pelicula.description.slice(0, 350) + "..."} 
                                 </p>
                             </div>
                             <!-- Botones Carrousel -->
@@ -364,6 +364,7 @@ function crearModalInfoPelicula(pelicula) {
 }
 
 // Si la pelicula cuenta con una key de video crea un iframe a partir de dicha key
+// BUG: al reproducir un video y cerrar el modal, el video se sigue reproduciendo hasta que se abra otro modal
 function comprobarTrailer(pelicula) {
     let resultado = "";
     if (pelicula.videoKey) {
@@ -384,7 +385,6 @@ function comprobarTrailer(pelicula) {
 // Cambia el aspecto del boton de un slide
 // Se ejecuta siempre que el usuario agregue o quite una pelicula a la lista
 function actualizarSlide(pelicula, accion) {
-    //let indice = peliculasDestacadas.indexOf(pelicula); // Esto no siempre funciona al recargar la pagina
     let indice = peliculasDestacadas.indexOf(peliculasDestacadas.find((pel) => pel.tittle == pelicula.tittle));
     const botones = document.querySelector(`.btns-${indice}`);
     if (botones && indice != -1) {
@@ -396,10 +396,6 @@ function actualizarSlide(pelicula, accion) {
                 break;
 
             case "quitar":
-                // Esta linea tira ERROR al agregar una pelicula, actualizar la pagina y luego intentar borrarla
-                // desde la seccion de mi lista. Si se hace desde la pagina principal no da problemas
-                // Cannot read properties of null (reading 'firstElementChild')
-                // SE ARREGLO CAMBIANDO EL INDICE
                 botones.firstElementChild.children[0].classList.replace("fa-minus", "fa-plus");
                 botones.firstElementChild.children[1].innerText = "Agregar a mi lista";
                 botones.firstElementChild.classList.replace("btn-slide-remove", "btn-slide-add");
@@ -782,7 +778,7 @@ window.addEventListener("load", () => {
         user.myList = crearListaPeliculas(listaAlmacenada);
         crearModalUsuario();
     }
-    crearSlidesCarrousel();
+    //crearSlidesCarrousel();
     //crearVentanaPrincipal();
     mostrarVentanaPrincipal();
 });
@@ -816,7 +812,7 @@ const obtenerPeliculasPopulares = async () => {
             let page = 2;
             // En total hay 35002 pages, 20 peliculas por pagina, NO necesito tantos datos
             // El valor del bucle while define cuantas peliculas traigo
-            while (page < 4) {
+            while (page < 5) {
                 const peticion2 = await fetch(
                     `https://api.themoviedb.org/3/movie/popular?api_key=f3b242b5857fe6135b2f4c0420e0ba0b&language=es-ARG&page=${page}`
                 );
@@ -858,6 +854,8 @@ const obtenerInfoPeliculas = async (idsPeliculasPopulares) => {
             peliculas.push(pelicula);
         }
         crearVentanaPrincipal(peliculas);
+        elegirPeliculasDestacadas(peliculas);
+        crearSlidesCarrousel();
         return peliculas;
     } catch (error) {
         console.log(`ERROR: ${error}`);
@@ -898,4 +896,26 @@ function construirPelicula(json) {
         director,
         video
     );
+}
+
+// Elige 3 peliculas al azar del array de peliculas para ponerlas en el carrousel principal
+function elegirPeliculasDestacadas(peliculas) {
+    // Necesito 3 indices al azar, que sean distintos entre si
+    // Math.random() * (max - min) + min;
+    let indice1 = Math.floor(Math.random() * (peliculas.length - 0) + 0);
+    let indice2 = Math.floor(Math.random() * (peliculas.length - 0) + 0);
+    let indice3 = Math.floor(Math.random() * (peliculas.length - 0) + 0);
+
+    while (indice2 == indice1) {
+        indice2 = Math.floor(Math.random() * (peliculas.length - 0) + 0);
+    }
+
+    while (indice3 == indice2) {
+        indice3 = Math.floor(Math.random() * (peliculas.length - 0) + 0);
+    }
+
+    let pelicula1 = peliculas[indice1];
+    let pelicula2 = peliculas[indice2];
+    let pelicula3 = peliculas[indice3];
+    peliculasDestacadas.push(pelicula1, pelicula2, pelicula3);
 }
