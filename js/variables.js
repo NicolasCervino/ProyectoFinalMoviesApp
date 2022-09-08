@@ -9,7 +9,9 @@ const interstelar = new Movie(
     "https://www.themoviedb.org/t/p/original/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
     "Un grupo de científicos y exploradores, encabezados por Cooper, se embarcan en un viaje espacial para encontrar un lugar con las condiciones necesarias para reemplazar a la Tierra y comenzar una nueva vida allí.",
     0,
-    new Date("2014-11-05")
+    new Date("2014-11-05"),
+    "Christopher Nolan",
+    "1TfbWbTBSHo"
 );
 
 const bladeRunner = new Movie(
@@ -21,7 +23,9 @@ const bladeRunner = new Movie(
     "https://www.themoviedb.org/t/p/original/aBvDBfqCHs0sCXoun7giyHeClb1.jpg",
     "Tras la rebelión de los replicantes creados por bioingeniería para ser utilizados como mano de obra esclava y la prohibición a Tyrell Corporation de seguir con su fabricación, el empresario Niander Wallace adquirió lo que quedaba de Tyrell Corp. y creó una nueva línea de replicantes mucho más obedientes.",
     1,
-    new Date("2017-10-04")
+    new Date("2017-10-04"),
+    "Denis Villeneuve",
+    "K8MLo5MO3Hg"
 );
 
 const spiderman = new Movie(
@@ -33,7 +37,9 @@ const spiderman = new Movie(
     "https://www.themoviedb.org/t/p/original/miZFgV81xG324rpUknQX8dtXuBl.jpg",
     "Tras descubrirse la identidad secreta de Peter Parker como Spider-Man, la vida del joven se vuelve una locura. Peter le pide ayuda al Doctor Strange para recuperar su vida, pero algo sale mal y provoca una fractura en el multiverso.",
     634649,
-    new Date("2021-12-15")
+    new Date("2021-12-15"),
+    "Jon Watts",
+    "xnhGsKgt0Sg"
 );
 
 // Contiene a todas las peliculas
@@ -81,3 +87,6 @@ const loginModal = document.querySelector("#loginModal");
 const contenidoModal = document.querySelector(".modal-content");
 const tituloModal = document.querySelector(".titulo-modal");
 const registro = document.querySelector(".subtitulo-registro");
+
+// Modal Peliculas
+const contenidoModalPeliculas = document.querySelector(".modal-pelicula");

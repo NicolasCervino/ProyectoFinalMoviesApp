@@ -1,5 +1,5 @@
 class Movie {
-    constructor(tittle, cast, genre, duration, img, img2, description, id, releaseDate) {
+    constructor(tittle, cast, genre, duration, img, img2, description, id, releaseDate, director, videoKey) {
         this.tittle = tittle;
         this.cast = cast;
         this.genre = genre;
@@ -9,5 +9,7 @@ class Movie {
         this.description = description;
         this.id = id;
         this.releaseDate = releaseDate;
+        this.director = director;
+        this.videoKey = videoKey;
     }
 }
