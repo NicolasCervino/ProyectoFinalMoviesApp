@@ -12,4 +12,9 @@ class Movie {
         this.director = director;
         this.videoKey = videoKey;
     }
+    getRandomImgDesktop() {
+        // Math.random() * (max - min) + min;
+        let indice = Math.floor(Math.random() * (this.imgDesktop.length - 0) + 0);
+        return this.imgDesktop[indice];
+    }
 }

@@ -49,7 +49,6 @@ function crearCards(peliculas, container) {
     for (const pelicula of peliculas) {
         container.innerHTML += crearCard(pelicula);
     }
-    // agregarFuncionalidadCards(); Si llamo a crear cards mas de 1 vez le agrego el evento varias veces
 }
 
 // Agrega los eventos a los botones de las cards para agregar o quitar peliculas y para abrir el modal
@@ -215,7 +214,7 @@ searchInput.addEventListener("keydown", (ev) => {
 function crearElementoCarrousel(pelicula, divPadre) {
     const codigo = `    <div class="img-overlay">
                             <!-- Imagen Principal -->
-                            <img src=${pelicula.imgDesktop} class="d-none d-sm-block w-100" alt="..." />
+                            <img src=${pelicula.getRandomImgDesktop()} class="d-none d-sm-block w-100" alt="..." />
                             <!-- Imagen Mobile -->
                             <img src=${pelicula.imgMobile} class="d-block d-sm-none w-100"/>
                         </div>
@@ -223,7 +222,7 @@ function crearElementoCarrousel(pelicula, divPadre) {
                             <div class="row w-50">
                                 <h2 class="text-start titulo-carrousel">${pelicula.tittle}</h2>
                                 <p class="text-start subtitulo-carrousel">
-                                    ${pelicula.description.slice(0, 350) + "..."} 
+                                    ${pelicula.description.slice(0, 200) + "..."} 
                                 </p>
                             </div>
                             <!-- Botones Carrousel -->
@@ -314,7 +313,7 @@ function crearModalInfoPelicula(pelicula) {
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-12 p-0" style="height: 55vh;">
-                                    <img src="${pelicula.imgDesktop}" class="img-modalInfo w-100 h-100 position-relative">
+                                    <img src="${pelicula.getRandomImgDesktop()}" class="img-modalInfo w-100 h-100 position-relative">
                                 </div>
                             </div>
                         </div>
@@ -427,6 +426,19 @@ botonNav.addEventListener("click", () => {
     if (top < 120) {
         header.classList.toggle("bg-dark");
         navbar.classList.toggle("bg-dark");
+    }
+});
+
+// Mi Lista
+const botonPeliculasNav = document.querySelector(".nav-link-Peliculas");
+
+// Permite mostrar la ventana principal desde el boton del nav
+botonPeliculasNav.addEventListener("click", () => {
+    let containerPrincipal = document.querySelector(".container-principal");
+
+    if (containerPrincipal.classList.contains("d-none")) {
+        crearVentanaPrincipal(peliculas);
+        mostrarVentanaPrincipal();
     }
 });
 
@@ -585,7 +597,6 @@ function agregarFuncionalidadModalLogin(formulario) {
     });
 }
 
-// FUNCION FLECHA
 // Crea un toast para cuando se intenta agregar una pelicula sin haber iniciado sesion
 const toastIniciarSesion = () => {
     Swal.fire({
@@ -664,12 +675,12 @@ const swiperPeliculas = new Swiper(".swiperPeliculas", {
     },
 });
 
-// Devuelve el codigo HTML para crear una card de una pelicula dentro de un Slide de Swiper
+// Devuelve el codigo HTML para crear una card de pelicula dentro de un Slide de Swiper
 const crearSlideSwiper = (pelicula, img) => {
     let image = "";
     switch (img) {
         case "imgDesktop":
-            image = pelicula.imgDesktop;
+            image = pelicula.getRandomImgDesktop();
             break;
         case "imgMobile":
             image = pelicula.imgMobile;
@@ -755,7 +766,9 @@ function crearVentanaPrincipal(res) {
 
     document.getElementById("Accion").innerHTML = "";
     document.getElementById("CienciaFiccion").innerHTML = "";
+    document.getElementById("Drama").innerHTML = "";
     document.getElementById("Terror").innerHTML = "";
+    document.getElementById("Animacion").innerHTML = "";
 
     crearCards(filtrarPorGenero("Acción"), document.getElementById("Accion"));
     crearCards(filtrarPorGenero("Ciencia ficción"), document.getElementById("CienciaFiccion"));
@@ -780,7 +793,7 @@ window.addEventListener("load", () => {
     }
     //crearSlidesCarrousel();
     //crearVentanaPrincipal();
-    mostrarVentanaPrincipal();
+    //mostrarVentanaPrincipal();
 });
 // Permite crear una lista de objetos Pelicula a partir de la lista guardada en local storage
 function crearListaPeliculas(lista) {
@@ -847,7 +860,7 @@ const obtenerInfoPeliculas = async (idsPeliculasPopulares) => {
         // Necesito hacer una peticion para cada id del array
         for (const id of idsPeliculasPopulares) {
             const res = await fetch(
-                `https://api.themoviedb.org/3/movie/${id}?api_key=f3b242b5857fe6135b2f4c0420e0ba0b&language=es-MX&append_to_response=credits,images,videos`
+                `https://api.themoviedb.org/3/movie/${id}?api_key=f3b242b5857fe6135b2f4c0420e0ba0b&language=es-MX&append_to_response=credits,images,videos&include_image_language=es,null`
             );
             const json = await res.json();
             const pelicula = construirPelicula(json);
@@ -870,7 +883,16 @@ const obtenerInfoPeliculas = async (idsPeliculasPopulares) => {
 
 // Construye un objeto pelicula a partir de los datos json obtenidos de la API
 function construirPelicula(json) {
-    let imgDesktop = `https://image.tmdb.org/t/p/original/${json.backdrop_path}`;
+    // Un array con los fondos de una pelicula
+    let imgsDesktop = [`https://image.tmdb.org/t/p/original/${json.backdrop_path}`];
+
+    // Agrego todas las images del json al objeto
+    let backdrops = json.images.backdrops;
+    for (let i = 0; i < backdrops.length; i++) {
+        const fondo = `https://image.tmdb.org/t/p/original/${backdrops[i]?.file_path}`;
+        imgsDesktop.push(fondo);
+    }
+
     let imgMobile = `https://image.tmdb.org/t/p/w500/${json.poster_path}`;
     let cast = json.credits.cast.map((actor) => actor.name);
     let generos = json.genres.map((genero) => genero.name);
@@ -888,7 +910,7 @@ function construirPelicula(json) {
         cast,
         generos[0],
         json.runtime + "m",
-        imgDesktop,
+        imgsDesktop,
         imgMobile,
         json.overview,
         json.id,
@@ -910,7 +932,7 @@ function elegirPeliculasDestacadas(peliculas) {
         indice2 = Math.floor(Math.random() * (peliculas.length - 0) + 0);
     }
 
-    while (indice3 == indice2) {
+    while (indice3 == indice2 || indice3 == indice1) {
         indice3 = Math.floor(Math.random() * (peliculas.length - 0) + 0);
     }
 
