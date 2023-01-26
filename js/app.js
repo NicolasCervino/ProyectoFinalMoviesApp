@@ -406,8 +406,8 @@ function actualizarSlide(pelicula, accion) {
 // Crea la lista en local storage en caso de que no exista,
 // sirve para cuando se abre la pagina en un navegador por primera vez
 localStorage.getItem("listaPeliculas") || localStorage.setItem("listaPeliculas", JSON.stringify([]));
-
-// Permite que el fondo del navbar cambie al realizar un scroll
+navbar;
+// Permite que el fondo del  cambie al realizar un scroll
 window.addEventListener("scroll", () => {
     const top = window.scrollY;
     if (top >= 120) {
@@ -825,7 +825,7 @@ const obtenerPeliculasPopulares = async () => {
             let page = 2;
             // En total hay 35002 pages, 20 peliculas por pagina, NO necesito tantos datos
             // El valor del bucle while define cuantas peliculas traigo
-            while (page < 5) {
+            while (page < 2) {
                 const peticion2 = await fetch(
                     `https://api.themoviedb.org/3/movie/popular?api_key=f3b242b5857fe6135b2f4c0420e0ba0b&language=es-ARG&page=${page}`
                 );
